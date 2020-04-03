@@ -12,8 +12,12 @@ import PrivateRoute from "./components/PrivateRoute";
 import CustomerPage from "./pages/CustomerPage";
 import InvoicePage from "./pages/Invoice";
 import RegisterPage from "./pages/RegisterPage";
+import {ToastContainer} from "react-toastify";
+import { toast } from "react-toastify";
 
 import '../css/app.css';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 
@@ -44,6 +48,7 @@ const App = () => {
                     </Switch>
                 </main>
             </HashRouter>
+            <ToastContainer position={toast.POSITION.BOTTOM_LEFT}/>
         </AuthContext.Provider>
     );
 };
