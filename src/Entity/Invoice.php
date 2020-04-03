@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\InvoiceRepository")
- * @Apiresource(
+ * @ApiResource(
  *     subresourceOperations={
  *          "api_customers_invoices_get_subresource"={
  *              "normalization_context"={"groups"={"invoices_subresource"}}
