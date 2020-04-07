@@ -14,6 +14,7 @@ import InvoicePage from "./pages/Invoice";
 import RegisterPage from "./pages/RegisterPage";
 import {ToastContainer} from "react-toastify";
 import { toast } from "react-toastify";
+import InvoiceShow from "./pages/InvoiceShow";
 
 import '../css/app.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -40,6 +41,7 @@ const App = () => {
                     <Switch>
                         <Route path="/login" component={LoginPage} />
                         <Route path="/register" component={RegisterPage} />
+                        <PrivateRoute path="/invoice/:id" component={InvoiceShow} />
                         <PrivateRoute path="/invoices/:id" component={InvoicePage} />
                         <PrivateRoute path="/invoices" component={InvoicesPage} />
                         <PrivateRoute path="/customers/:id" component={CustomerPage} />

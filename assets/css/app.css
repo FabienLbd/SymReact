@@ -1,0 +1,25 @@
+.invoice-head {
+    margin-bottom: 100px;
+    background-color: #ecf0f1;
+    padding: 20px;
+}
+.table-invoice td {
+    text-align: center;
+}
+
+.table-invoice th {
+    padding-left: 5rem;
+}
+
+.invoice-foot {
+    margin-top: 120px;
+    font-size: 1.2rem;
+}
+
+.border-bot {
+    border-bottom: solid 1px dimgrey;
+}
+
+.strong {
+    font-weight: bolder;
+}

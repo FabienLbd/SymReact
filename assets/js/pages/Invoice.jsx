@@ -13,7 +13,8 @@ const InvoicePage = ({history, match}) => {
     const [invoice, setInvoice] = useState({
         amount: "",
         customer: "",
-        status: "SENT"
+        status: "SENT",
+        fee: ""
     });
 
     const [customers, setCustomers] = useState([]);
@@ -21,7 +22,8 @@ const InvoicePage = ({history, match}) => {
     const [errors, setErrors] = useState({
         amount: "",
         customer: "",
-        status: ""
+        status: "",
+        fee: ""
     });
 
     const [edit, setEdit] = useState(false);
@@ -107,12 +109,21 @@ const InvoicePage = ({history, match}) => {
                 <Field
                     name="amount"
                     type="number"
-                    placeholder="Montant de la facture"
-                    label="Montant"
+                    placeholder="Entrer le montant"
+                    label="Montant du loyer HT"
                     onChange={handleChange}
                     value={invoice.amount}
                     error={errors.amount}
                 />
+                    <Field
+                        name="fee"
+                        type="number"
+                        placeholder="Montant des charges"
+                        label="Montant des charges"
+                        onChange={handleChange}
+                        value={invoice.fee}
+                        error={errors.fee}
+                    />
                 <Select
                     name="customer"
                     label="Client"

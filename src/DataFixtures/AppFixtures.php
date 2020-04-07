@@ -60,6 +60,7 @@ class AppFixtures extends Fixture
                         ->setStatus($faker->randomElement(['SENT', 'PAID', 'CANCELLED']))
                         ->setCustomer($customer)
                         ->setChrono($chrono)
+                        ->setFee($faker->randomFloat(2,150, 200))
                     ;
                     $chrono++;
 

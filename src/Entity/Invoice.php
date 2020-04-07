@@ -8,6 +8,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\InvoiceRepository")
@@ -31,6 +32,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Invoice
 {
+    /**
+     * Hook timestampable behavior
+     * updates createdAt, updatedAt fields
+     */
+    use TimestampableEntity;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -80,6 +87,14 @@ class Invoice
      * @Assert\Type(type="integer", message="Le chrono doit être un nombre entier")
      */
     private $chrono;
+
+    /**
+     * @ORM\Column(type="float")
+     * @Groups({"invoices_read", "customers_read", "invoices_subresource"})
+     * @Assert\NotBlank(message="Le montant des frais est obligatoire")
+     * @Assert\Type(type="numeric", message="Le montant des frais doit être numerique !")
+     */
+    private $fee;
 
     /**
      * @Groups({"invoices_read", "invoices_subresource"})
@@ -151,6 +166,18 @@ class Invoice
     public function setChrono($chrono): self
     {
         $this->chrono = $chrono;
+
+        return $this;
+    }
+
+    public function getFee(): ?float
+    {
+        return $this->fee;
+    }
+
+    public function setFee(float $fee): self
+    {
+        $this->fee = $fee;
 
         return $this;
     }

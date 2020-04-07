@@ -96,6 +96,8 @@ const InvoicesPage = (props) => {
                     <th>Numéro</th>
                     <th>Client</th>
                     <th className="text-center">Date d'envoi</th>
+                    <th className="text-center">Créée le</th>
+                    <th className="text-center">Mise à jour le</th>
                     <th className="text-center">Statut</th>
                     <th className="text-center">Montant</th>
                     <th/>
@@ -110,6 +112,8 @@ const InvoicesPage = (props) => {
                             </Link>
                         </td>
                         <td className="text-center">{formatDate(invoice.sentAt)}</td>
+                        <td className="text-center">{formatDate(invoice.createdAt)}</td>
+                        <td className="text-center">{formatDate(invoice.updatedAt)}</td>
                         <td className="text-center">
                             <span className={"badge badge-" + STATUS_CLASSES[invoice.status]}>{STATUS_LABELS[invoice.status]}</span>
                         </td>
@@ -122,6 +126,7 @@ const InvoicesPage = (props) => {
                             >
                                 Supprimer
                             </button>
+                            <Link className="btn btn-sm btn-primary ml-1" to={"/invoice/" + invoice.id}>Détails</Link>
                         </td>
                     </tr>
                 )}
