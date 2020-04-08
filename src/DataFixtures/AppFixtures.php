@@ -38,6 +38,12 @@ class AppFixtures extends Fixture
                 ->setLastname($faker->lastName)
                 ->setEmail($faker->email)
                 ->setPassword($hash)
+                ->setCompany($faker->company)
+                ->setAddress($faker->address)
+                ->setPostalCode($faker->postcode)
+                ->setCity($faker->city)
+                ->setNumTVA($faker->randomDigit)
+                ->setPhone($faker->phoneNumber)
             ;
             $manager->persist($user);
 
@@ -49,6 +55,9 @@ class AppFixtures extends Fixture
                     ->setCompany($faker->company())
                     ->setEmail($faker->email)
                     ->setUser($user)
+                    ->setAddress($faker->address)
+                    ->setPostalCode($faker->postcode)
+                    ->setCity($faker->city)
                 ;
                 $manager->persist($customer);
 

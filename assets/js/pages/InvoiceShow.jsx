@@ -10,16 +10,35 @@ const InvoiceShow = ({ match, history }) => {
         customer: "",
         sentAt:"",
         fee: "",
-        chrono: ""
+        chrono: "",
+        user: ""
     });
 
+    const months = {
+        1: "Janvier",
+        2: "Février",
+        3: "Mars",
+        4: "Avril",
+        5: "Mai",
+        6: "Juin",
+        7: "Juillet",
+        8: "Août",
+        9: "Septembre",
+        10: "Octobre",
+        11: "Novembre",
+        12: "Décembre"
+    };
+
     const date = new Date();
+    date.setDate(1);
+
+    const invoiceMonth = date.getMonth() + 1;
 
     //Récuperation d'une facture en fonction de l'Id
     const fetchInvoice = async id => {
         try {
-            const { amount, customer, sentAt, fee, chrono } = await invoicesAPI.findInvoice(id);
-            setInvoice({ amount, customer, sentAt, fee, chrono });
+            const { amount, customer, sentAt, fee, chrono, user } = await invoicesAPI.findInvoice(id);
+            setInvoice({ amount, customer, sentAt, fee, chrono, user });
         } catch (error) {
             toast.error("Impossible de charger la facture demandée !");
             history.replace("/invoices");
@@ -31,7 +50,7 @@ const InvoiceShow = ({ match, history }) => {
 
     //Chargement de la facture si besoin au chargement du composant ou au changement de l'Id
     useEffect(() => {
-        fetchInvoice(id)
+        fetchInvoice(id);
 
     }, [id]);
 
@@ -39,17 +58,17 @@ const InvoiceShow = ({ match, history }) => {
         <>
             <div className="d-flex justify-content-between invoice-head">
                 <div>
-                    <span className="strong">SCI MLK Mérignac </span><br/>
-                    18/20 avenue de la somme <br/>
-                    33700 Mérignac <br/>
+                    <span className="strong">{invoice.user.company}</span><br/>
+                    {invoice.user.address}<br/>
+                    {invoice.user.postalCode + " " +  invoice.user.city}<br/>
                     <br/>
-                    <span className="strong">NI TVA FR :</span> 499 517 365 <br/>
-                    <span className="strong">Tel :</span> 06 79 76 31 54
+                    <span className="strong">NI TVA FR :</span> {invoice.user.numTVA}<br/>
+                    <span className="strong">Tel :</span> {invoice.user.phone}
                 </div>
                 <div>
-                    <span className="strong">{invoice.customer.company}</span> <br/>
-                    18 Avenue de la Somme <br/>
-                    33700 Mérignac
+                    <span className="strong">{invoice.customer.company}</span><br/>
+                    {invoice.customer.address}<br/>
+                    {invoice.customer.postalCode + " " + invoice.customer.city}
                 </div>
                 <div>
                     <p>Merignac le,</p>
@@ -63,7 +82,7 @@ const InvoiceShow = ({ match, history }) => {
                 <table className="table table-borderless table-striped table-invoice">
                     <tbody>
                         <tr>
-                            <th scope="row">Période du mois {date.getMonth().toString()}</th>
+                            <th scope="row">Période du mois d' {months[invoiceMonth] + " " + date.getFullYear()}</th>
                             <td></td>
                         </tr>
                         <tr>
@@ -89,10 +108,9 @@ const InvoiceShow = ({ match, history }) => {
                     </tbody>
                 </table>
             </div>
-            <div className="d-flex justify-content-around invoice-foot">
+            <div className="d-flex justify-content-around invoice-foot mb-4">
                 <div>En votre aimable réglement</div>
                 <div>Le gérant</div>
-
             </div>
         </>
     );

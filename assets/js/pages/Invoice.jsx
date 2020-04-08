@@ -79,12 +79,12 @@ const InvoicePage = ({history, match}) => {
     const handleSubmit = async event => {
         event.preventDefault();
         try {
+            setErrors({});
             if (edit) {
                 await invoicesAPI.editInvoice(id, invoice);
                 toast.success("La facture a bien été modifiée !");
             } else {
                 await invoicesAPI.createInvoice(invoice);
-                setErrors({});
                 toast.success("La facture a bien été enregistrée !");
                 history.replace("/invoices");
             }

@@ -93,10 +93,43 @@ class Customer
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="customers")
-     * @Groups({"customers_read"})
+     * @Groups({"customers_read", "invoices_read"})
      * @Assert\NotBlank(message="L'utilisateur est obligatoire")
      */
     private $user;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read", "invoices_read"})
+     * @Assert\NotBlank(message="L'adresse est obligatoire")
+     * @Assert\Length(
+     *      min=3,
+     *      minMessage="L'adresse doit faire entre 3 et 255 caractères",
+     *      max=255,
+     *      maxMessage="L'adresse' doit faire entre 3 et 255 caractères"
+     * )
+     */
+    private $address;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Groups({"customers_read", "invoices_read"})
+     * @Assert\NotBlank(message="Le code postal est obligatoire")
+     */
+    private $postalCode;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read", "invoices_read"})
+     * @Assert\NotBlank(message="La ville est obligatoire")
+     * @Assert\Length(
+     *      min=3,
+     *      minMessage="Le nom de la ville doit faire entre 3 et 255 caractères",
+     *      max=255,
+     *      maxMessage="Le nom de la ville doit faire entre 3 et 255 caractères"
+     * )
+     */
+    private $city;
 
     public function __construct()
     {
@@ -217,6 +250,42 @@ class Customer
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getPostalCode(): ?string
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode(string $postalCode): self
+    {
+        $this->postalCode = $postalCode;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }

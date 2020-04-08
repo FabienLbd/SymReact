@@ -175,7 +175,7 @@ class Invoice
         return $this->fee;
     }
 
-    public function setFee(float $fee): self
+    public function setFee($fee): self
     {
         $this->fee = $fee;
 

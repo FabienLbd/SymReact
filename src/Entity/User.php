@@ -49,6 +49,29 @@ class User implements UserInterface
     private $password;
 
     /**
+     * @var string The hashed confirmed password
+     * @Assert\NotBlank(message="La confirmation du mot de passe est obligatoire")
+     * @Assert\IdenticalTo(propertyPath="password", message="La confirmation du mot de passe n'est pas valide")
+     */
+    private $passwordConfirm;
+
+    /**
+     * @return string
+     */
+    public function getPasswordConfirm(): string
+    {
+        return $this->passwordConfirm;
+    }
+
+    /**
+     * @param string $passwordConfirm
+     */
+    public function setPasswordConfirm(string $passwordConfirm): void
+    {
+        $this->passwordConfirm = $passwordConfirm;
+    }
+
+    /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
      * @Assert\NotBlank(message="Le prénom est obligatoire")
@@ -76,6 +99,48 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Customer", mappedBy="user")
      */
     private $customers;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Assert\NotBlank(message="L'adresse est obligatoire")
+     */
+    private $address;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Assert\NotBlank(message="Le code postal est obligatoire")
+     */
+    private $postalCode;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Assert\NotBlank(message="Le numéro de TVA est obligatoire")
+     */
+    private $numTVA;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Assert\NotBlank(message="Le nom de la société est obligatoire")
+     */
+    private $company;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Assert\NotBlank(message="Le nom de la ville est obligatoire")
+     */
+    private $city;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Assert\NotBlank(message="Le numéro de téléphone est obligatoire")
+     */
+    private $phone;
 
     public function __construct()
     {
@@ -211,6 +276,78 @@ class User implements UserInterface
                 $customer->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getPostalCode(): ?string
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode(string $postalCode): self
+    {
+        $this->postalCode = $postalCode;
+
+        return $this;
+    }
+
+    public function getNumTVA(): ?string
+    {
+        return $this->numTVA;
+    }
+
+    public function setNumTVA(string $numTVA): self
+    {
+        $this->numTVA = $numTVA;
+
+        return $this;
+    }
+
+    public function getCompany(): ?string
+    {
+        return $this->company;
+    }
+
+    public function setCompany(string $company): self
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): self
+    {
+        $this->phone = $phone;
 
         return $this;
     }

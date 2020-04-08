@@ -12,6 +12,9 @@ const CustomerPage = ({match, history}) => {
         lastname: "",
         firstname: "",
         email: "",
+        address: "",
+        postalCode: "",
+        city: "",
         company: ""
     });
 
@@ -19,6 +22,9 @@ const CustomerPage = ({match, history}) => {
         lastname: "",
         firstname: "",
         email: "",
+        address: "",
+        postalCode: "",
+        city: "",
         company: ""
     });
 
@@ -108,6 +114,33 @@ const CustomerPage = ({match, history}) => {
                     value={customer.email}
                     onChange={handleChange}
                     error={errors.email}
+                />
+                <Field
+                    name="address"
+                    label="Adresse"
+                    placeholder="Entrez votre adresse"
+                    type="text"
+                    value={customer.address}
+                    onChange={handleChange}
+                    error={errors.address}
+                />
+                <Field
+                    name="postalCode"
+                    label="Code postal"
+                    placeholder="Entrez votre code postal"
+                    type="text"
+                    value={customer.postalCode}
+                    onChange={handleChange}
+                    error={errors.postalCode}
+                />
+                <Field
+                    name="city"
+                    label="Ville"
+                    placeholder="Entrez votre ville"
+                    type="text"
+                    value={customer.city}
+                    onChange={handleChange}
+                    error={errors.city}
                 />
                 <Field
                     name="company"
