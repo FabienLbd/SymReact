@@ -1,6 +1,9 @@
+.invoice-show {
+    font-size: 1.3rem;
+}
 .invoice-head {
     margin-bottom: 100px;
-    background-color: #ecf0f1;
+    //background-color: #ecf0f1;
     padding: 20px;
 }
 .table-invoice td {
@@ -13,7 +16,7 @@
 
 .invoice-foot {
     margin-top: 120px;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
 }
 
 .border-bot {
@@ -22,4 +25,9 @@
 
 .strong {
     font-weight: bolder;
+}
+
+@media print {
+    /* All your print styles go here */
+    /*#header, #footer, #nav { display: none !important; }*/
 }
