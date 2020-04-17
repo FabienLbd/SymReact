@@ -1,9 +1,27 @@
+/* Navbar */
+.fa-male, .fa-download, .fa-euro-sign, .fa-times-circle,
+.fa-trash-alt, .fa-pencil-alt, .fa-eye, .fa-plus-circle, .fa-file,
+.fa-users, .fa-save
+{
+    margin-right: 5px;
+}
+
+.frame {
+    border: solid 1px black;
+    width: 210mm;
+    height: 297mm ;
+    margin: auto;
+}
+
 .invoice-show {
-    font-size: 1.3rem;
+    margin: auto;
+    font-size: 1rem;
+    width: 208mm;
+    height: 295mm;
+    padding: 0;
 }
 .invoice-head {
     margin-bottom: 100px;
-    //background-color: #ecf0f1;
     padding: 20px;
 }
 .table-invoice td {
@@ -16,7 +34,6 @@
 
 .invoice-foot {
     margin-top: 120px;
-    font-size: 1.4rem;
 }
 
 .border-bot {

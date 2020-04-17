@@ -4,6 +4,8 @@ import CustomersAPI from "../services/customersAPI";
 import {Link} from "react-router-dom";
 import { toast } from "react-toastify";
 import TableLoader from "../components/loaders/TableLoader";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faTrashAlt, faPlusCircle} from '@fortawesome/fontawesome-free-solid';
 
 const CustomersPage = (props) => {
     const [customers, setCustomers] = useState([]);
@@ -67,7 +69,10 @@ const CustomersPage = (props) => {
         <>
             <div className="mb-3 d-flex justify-content-between align-items-center">
                 <h1>Liste des clients</h1>
-                <Link className="btn btn-primary" to="/customers/new">Créer un client</Link>
+                <Link className="btn btn-primary" to="/customers/new">
+                    <FontAwesomeIcon icon={faPlusCircle} />
+                    Créer un client
+                </Link>
             </div>
 
             <div className="form-group">
@@ -77,7 +82,6 @@ const CustomersPage = (props) => {
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th>Id.</th>
                     <th>Client</th>
                     <th>Email</th>
                     <th>Entreprise</th>
@@ -89,7 +93,6 @@ const CustomersPage = (props) => {
                 { !loading && (
                     <tbody>
                     {paginatedCustomers.map(customer => <tr key={customer.id}>
-                            <td>{customer.id}</td>
                             <td>
                                 <Link to={"/customers/" + customer.id}>
                                     {customer.firstname} {customer.lastname}
@@ -107,6 +110,7 @@ const CustomersPage = (props) => {
                                     disabled={customer.invoices.length > 0}
                                     className="btn btn-sm btn-danger"
                                 >
+                                    <FontAwesomeIcon icon={faTrashAlt} />
                                     Supprimer
                                 </button>
                             </td>

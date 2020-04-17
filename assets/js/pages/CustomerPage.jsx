@@ -4,6 +4,8 @@ import {Link} from "react-router-dom";
 import customersAPI from "../services/customersAPI";
 import { toast } from "react-toastify";
 import FormContentLoader from "../components/loaders/FormContentLoader";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faSave, faTrashAlt} from '@fortawesome/fontawesome-free-solid';
 
 const CustomerPage = ({match, history}) => {
     const { id = "new" } = match.params;
@@ -152,7 +154,10 @@ const CustomerPage = ({match, history}) => {
                 />
 
                 <div className="form-group">
-                    <button type="submit" className="btn btn-success">Enregistrer</button>
+                    <button type="submit" className="btn btn-success">
+                        <FontAwesomeIcon icon={faSave} />
+                        Enregistrer
+                    </button>
                     <Link to="/customers" className="btn btn-link">Retour à la liste</Link>
                 </div>
             </form>

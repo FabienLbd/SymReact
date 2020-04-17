@@ -5,6 +5,8 @@ import moment from "moment";
 import {Link} from "react-router-dom";
 import { toast } from "react-toastify";
 import TableLoader from "../components/loaders/TableLoader";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faTrashAlt, faPencilAlt, faEye, faPlusCircle} from '@fortawesome/fontawesome-free-solid';
 
 const STATUS_CLASSES = {
     PAID: "success",
@@ -83,7 +85,10 @@ const InvoicesPage = (props) => {
         <>
             <div className="mb-3 d-flex justify-content-between align-items-center">
                 <h1>Liste des factures</h1>
-                <Link className="btn btn-primary" to="/invoices/new">Créer une facture</Link>
+                <Link className="btn btn-primary" to="/invoices/new">
+                    <FontAwesomeIcon icon={faPlusCircle} />
+                    Créer une facture
+                </Link>
             </div>
 
             <div className="form-group">
@@ -119,14 +124,21 @@ const InvoicesPage = (props) => {
                         </td>
                         <td className="text-center">{invoice.amount.toLocaleString()} $</td>
                         <td>
-                            <Link className="btn btn-sm btn-primary mr-1" to={"/invoices/" + invoice.id}>Editer</Link>
+                            <Link className="btn btn-sm btn-primary mr-1" to={"/invoices/" + invoice.id}>
+                                <FontAwesomeIcon icon={faPencilAlt} />
+                                Editer
+                            </Link>
                             <button
                                 onClick={() => handleDelete(invoice.id)}
                                 className="btn btn-sm btn-danger"
                             >
+                                <FontAwesomeIcon icon={faTrashAlt} />
                                 Supprimer
                             </button>
-                            <Link className="btn btn-sm btn-primary ml-1" to={"/invoice/" + invoice.id}>Détails</Link>
+                            <Link className="btn btn-sm btn-primary ml-1" to={"/invoice/" + invoice.id}>
+                                <FontAwesomeIcon icon={faEye} />
+                                Détails
+                            </Link>
                         </td>
                     </tr>
                 )}

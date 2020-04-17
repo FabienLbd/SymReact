@@ -6,24 +6,27 @@ import customersAPI from "../services/customersAPI";
 import invoicesAPI from "../services/invoicesAPI";
 import { toast } from "react-toastify";
 import FormContentLoader from "../components/loaders/FormContentLoader";
+import {faSave} from "@fortawesome/fontawesome-free-solid";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
 
 const InvoicePage = ({history, match}) => {
     const {id ="new"} = match.params;
 
     const [invoice, setInvoice] = useState({
         amount: "",
+        fee: "",
         customer: "",
-        status: "SENT",
-        fee: ""
+        status: "SENT"
     });
 
     const [customers, setCustomers] = useState([]);
 
     const [errors, setErrors] = useState({
         amount: "",
+        fee: "",
         customer: "",
-        status: "",
-        fee: ""
+        status: ""
     });
 
     const [edit, setEdit] = useState(false);
@@ -47,8 +50,8 @@ const InvoicePage = ({history, match}) => {
     //Récuperation d'une facture en fonction de l'Id
     const fetchInvoice = async id => {
         try {
-            const { amount, status, customer } = await invoicesAPI.findInvoice(id);
-            setInvoice({ amount, status, customer: customer.id });
+            const { amount, status, customer, fee } = await invoicesAPI.findInvoice(id);
+            setInvoice({ amount, status, customer: customer.id, fee });
             setLoading(false);
         } catch (error) {
             toast.error("Impossible de charger la facture demandée !");
@@ -149,7 +152,10 @@ const InvoicePage = ({history, match}) => {
                     <option value="CANCELLED">Annulée</option>
                 </Select>
                 <div className="form-group">
-                    <button type="submit" className="btn btn-success">Enregistrer</button>
+                    <button type="submit" className="btn btn-success">
+                        <FontAwesomeIcon icon={faSave} />
+                        Enregistrer
+                    </button>
                     <Link to="/invoices" className="btn btn-link">Retour à la liste</Link>
                 </div>
             </form>

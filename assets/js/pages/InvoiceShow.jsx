@@ -2,7 +2,8 @@ import React, {useState, useEffect} from 'react';
 import invoicesAPI from "../services/invoicesAPI";
 import {toast} from "react-toastify";
 import Pdf from "react-to-pdf";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload } from '@fortawesome/fontawesome-free-solid';
 const InvoiceShow = ({ match, history }) => {
     const { id } = match.params;
 
@@ -37,10 +38,6 @@ const InvoiceShow = ({ match, history }) => {
 
     //Gestion de l'extraction en pdf
     const ref = React.createRef();
-    const options = {
-        unit: 'in',
-        format: [837,1000]
-    };
 
     const fileName = `facture-${months[invoiceMonth]}-${invoice.customer.company}`;
 
@@ -69,67 +66,77 @@ const InvoiceShow = ({ match, history }) => {
 
     return(
         <>
-            <div className="mb-3 d-flex justify-content-end">
-                <Pdf targetRef={ref} filename={fileName} options={options} onComplete={onComplete}>
-                    {({ toPdf }) => <button className="btn btn-info" onClick={toPdf}>Télécharger en pdf</button>}
+            <div className="mb-5 d-flex justify-content-around">
+                <h2 className="m-0">Aperçu de la facture</h2>
+                <Pdf targetRef={ref}
+                     filename={fileName}
+                     onComplete={onComplete}>
+                    {({ toPdf }) =>
+                        <button className="btn btn-danger" onClick={toPdf}>
+                            <FontAwesomeIcon icon={faDownload} />
+                            Télécharger en pdf
+                        </button>}
                 </Pdf>
             </div>
-            <div ref={ref} className="invoice-show">
-                <div className="d-flex justify-content-between invoice-head">
-                    <div>
-                        <span className="strong">{invoice.user.company}</span><br/>
-                        {invoice.user.address}<br/>
-                        {invoice.user.postalCode + " " +  invoice.user.city}<br/>
-                        <br/>
-                        <span className="strong">NI TVA FR :</span> {invoice.user.numTVA}<br/>
-                        <span className="strong">Tel :</span> {invoice.user.phone}
+
+            <div className="frame mb-3">
+                <div ref={ref} className="invoice-show">
+                    <div className="d-flex justify-content-between invoice-head">
+                        <div>
+                            <span className="strong">{invoice.user.company}</span><br/>
+                            {invoice.user.address}<br/>
+                            {invoice.user.postalCode + " " +  invoice.user.city}<br/>
+                            <br/>
+                            <span className="strong">NI TVA FR :</span> {invoice.user.numTVA}<br/>
+                            <span className="strong">Tel :</span> {invoice.user.phone}
+                        </div>
+                        <div>
+                            <span className="strong">{invoice.customer.company}</span><br/>
+                            {invoice.customer.address}<br/>
+                            {invoice.customer.postalCode + " " + invoice.customer.city}
+                        </div>
+                        <div>
+                            <p>Merignac le,</p>
+                            <p>{date.toLocaleDateString()}</p>
+                        </div>
                     </div>
-                    <div>
-                        <span className="strong">{invoice.customer.company}</span><br/>
-                        {invoice.customer.address}<br/>
-                        {invoice.customer.postalCode + " " + invoice.customer.city}
+                    <div className="pl-2">
+                        <span className="strong">Objet</span> : Facture de loyer N° {invoice.chrono}
                     </div>
-                    <div>
-                        <p>Merignac le,</p>
-                        <p>{date.toLocaleDateString()}</p>
+                    <div className="mt-3 mb-5 mx-auto">
+                        <table className="table table-borderless table-striped table-invoice">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Période du mois d' {months[invoiceMonth] + " " + date.getFullYear()}</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Montant des loyers HT</th>
+                                    <td>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(invoice.amount)}</td>
+                                </tr>
+                                <tr className="border-bot">
+                                    <th scope="row">Provisions charges HT</th>
+                                    <td>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(invoice.fee)}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Total HT</th>
+                                    <td>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(totalHT)}</td>
+                                </tr>
+                                <tr className="border-bot">
+                                    <th scope="row">TVA à 20%</th>
+                                    <td>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(totalHT * 0.20)}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Total du TTC</th>
+                                    <td>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(totalHT + totalHT * 0.20)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-                <div className="ml-2">
-                    <span className="strong">Objet</span> : Facture de loyer N° {invoice.chrono}
-                </div>
-                <div className="mt-3 mb-5">
-                    <table className="table table-borderless table-striped table-invoice">
-                        <tbody>
-                            <tr>
-                                <th scope="row">Période du mois d' {months[invoiceMonth] + " " + date.getFullYear()}</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Montant des loyers HT</th>
-                                <td>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(invoice.amount)}</td>
-                            </tr>
-                            <tr className="border-bot">
-                                <th scope="row">Provisions charges</th>
-                                <td>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(invoice.fee)}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Total HT</th>
-                                <td>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(totalHT)}</td>
-                            </tr>
-                            <tr className="border-bot">
-                                <th scope="row">TVA à 20%</th>
-                                <td>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(totalHT * 0.20)}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Total du TTC</th>
-                                <td>{new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(totalHT + totalHT * 0.20)}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div className="d-flex justify-content-around invoice-foot mb-4">
-                    <div>En votre aimable réglement</div>
-                    <div>Le gérant</div>
+                    <div className="d-flex justify-content-around invoice-foot">
+                        <div>En votre aimable réglement</div>
+                        <div>Le gérant</div>
+                    </div>
                 </div>
             </div>
         </>

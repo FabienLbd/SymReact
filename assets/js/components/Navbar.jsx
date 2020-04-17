@@ -3,6 +3,8 @@ import AuthAPI from '../services/authAPI';
 import {NavLink} from 'react-router-dom';
 import AuthContext from "../contexts/AuthContext";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUsers, faTimesCircle, faFile } from '@fortawesome/fontawesome-free-solid';
 
 const Navbar = ({history}) => {
     const { isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
@@ -25,10 +27,14 @@ const Navbar = ({history}) => {
             <div className="collapse navbar-collapse" id="navbarColor01">
                 <ul className="navbar-nav mr-auto">
                     <li className="nav-item">
-                        <NavLink className="nav-link" to="/customers">Clients</NavLink>
+                        <NavLink className="nav-link" to="/customers">
+                            <FontAwesomeIcon icon={faUsers} />
+                             Clients</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className="nav-link" to="/invoices">Factures</NavLink>
+                        <NavLink className="nav-link" to="/invoices">
+                            <FontAwesomeIcon icon={faFile} />
+                            Factures</NavLink>
                     </li>
                 </ul>
                 <ul className="navbar-nav ml-auto">
@@ -41,7 +47,10 @@ const Navbar = ({history}) => {
                         </li>
                     </> || (
                         <li className="nav-item">
-                            <button onClick={handleLogout} className="btn btn-danger">Déconnexion</button>
+                            <button onClick={handleLogout} className="btn btn-danger">
+                                <FontAwesomeIcon icon={faTimesCircle} />
+                                Déconnexion
+                            </button>
                         </li>
                     )}
 
