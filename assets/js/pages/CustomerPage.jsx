@@ -36,8 +36,8 @@ const CustomerPage = ({match, history}) => {
     //Récuperation d'un customer en fonction de l'Id
     const fetchCustomer = async id => {
         try {
-            const { firstname, lastname, email, company } = await customersAPI.findCustomer(id);
-            setCustomer({ firstname, lastname, email, company });
+            const { firstname, lastname, email, address, city, postalCode, company } = await customersAPI.findCustomer(id);
+            setCustomer({ firstname, lastname, email, address, city, postalCode, company });
             setLoading(false);
         } catch (error) {
             toast.error("Le client n'a pas pu être chargé !");
@@ -88,80 +88,96 @@ const CustomerPage = ({match, history}) => {
 
     return (
         <>
-            {!edit && <h1>Création d'un client</h1> || <h1>Modification du client</h1>}
-            { loading && <FormContentLoader /> }
+            <div className="w-75 mx-auto">
+                {!edit && <h1>Création d'un client</h1> || <h1>Modification du client</h1>}
+                { loading && <FormContentLoader /> }
 
-            { !loading && ( <form onSubmit={handleSubmit}>
-                <Field
-                    name="lastname"
-                    label="Nom de famille"
-                    placeholder="Nom de famille du client"
-                    value={customer.lastname}
-                    onChange={handleChange}
-                    error={errors.lastname}
-                />
-                <Field
-                    name="firstname"
-                    label="Prénom"
-                    placeholder="Prénom du client"
-                    value={customer.firstname}
-                    onChange={handleChange}
-                    error={errors.firstname}
-                />
-                <Field
-                    name="email"
-                    label="Email"
-                    placeholder="Adresse email du client"
-                    type="email"
-                    value={customer.email}
-                    onChange={handleChange}
-                    error={errors.email}
-                />
-                <Field
-                    name="address"
-                    label="Adresse"
-                    placeholder="Entrez votre adresse"
-                    type="text"
-                    value={customer.address}
-                    onChange={handleChange}
-                    error={errors.address}
-                />
-                <Field
-                    name="postalCode"
-                    label="Code postal"
-                    placeholder="Entrez votre code postal"
-                    type="text"
-                    value={customer.postalCode}
-                    onChange={handleChange}
-                    error={errors.postalCode}
-                />
-                <Field
-                    name="city"
-                    label="Ville"
-                    placeholder="Entrez votre ville"
-                    type="text"
-                    value={customer.city}
-                    onChange={handleChange}
-                    error={errors.city}
-                />
-                <Field
-                    name="company"
-                    label="Entreprise"
-                    placeholder="Entreprise du client"
-                    value={customer.company}
-                    onChange={handleChange}
-                    error={errors.company}
-                />
+                { !loading && (
+                    <form onSubmit={handleSubmit}>
+                        <div className="row">
+                            <div className="col-6">
+                                <Field
+                                    isRequired={true}
+                                    name="lastname"
+                                    label="Nom de famille"
+                                    placeholder="Nom de famille du client"
+                                    value={customer.lastname}
+                                    onChange={handleChange}
+                                    error={errors.lastname}
+                                />
+                                <Field
+                                    isRequired={true}
+                                    name="firstname"
+                                    label="Prénom"
+                                    placeholder="Prénom du client"
+                                    value={customer.firstname}
+                                    onChange={handleChange}
+                                    error={errors.firstname}
+                                />
+                                <Field
+                                    isRequired={true}
+                                    name="email"
+                                    label="Email"
+                                    placeholder="Adresse email du client"
+                                    type="email"
+                                    value={customer.email}
+                                    onChange={handleChange}
+                                    error={errors.email}
+                                />
+                            </div>
+                            <div className="col-6">
+                                <Field
+                                    isRequired={true}
+                                    name="address"
+                                    label="Adresse"
+                                    placeholder="Entrez votre adresse"
+                                    type="text"
+                                    value={customer.address}
+                                    onChange={handleChange}
+                                    error={errors.address}
+                                />
+                                <Field
+                                    isRequired={true}
+                                    name="postalCode"
+                                    label="Code postal"
+                                    placeholder="Entrez votre code postal"
+                                    type="text"
+                                    value={customer.postalCode}
+                                    onChange={handleChange}
+                                    error={errors.postalCode}
+                                />
+                                <Field
+                                    isRequired={true}
+                                    name="city"
+                                    label="Ville"
+                                    placeholder="Entrez votre ville"
+                                    type="text"
+                                    value={customer.city}
+                                    onChange={handleChange}
+                                    error={errors.city}
+                                />
+                            </div>
+                        </div>
+                        <Field
+                            isRequired={true}
+                            name="company"
+                            label="Entreprise"
+                            placeholder="Entreprise du client"
+                            value={customer.company}
+                            onChange={handleChange}
+                            error={errors.company}
+                        />
+                        <div className="form-group d-flex justify-content-end">
+                            <button type="submit" className="btn btn-success">
+                                <FontAwesomeIcon icon={faSave} />
+                                Enregistrer
+                            </button>
+                            <Link to="/customers" className="btn btn-link">Retour à la liste</Link>
+                        </div>
+                    </form>
+                )}
+            </div>
 
-                <div className="form-group">
-                    <button type="submit" className="btn btn-success">
-                        <FontAwesomeIcon icon={faSave} />
-                        Enregistrer
-                    </button>
-                    <Link to="/customers" className="btn btn-link">Retour à la liste</Link>
-                </div>
-            </form>
-            )}
         </>
 
     );

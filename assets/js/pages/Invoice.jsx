@@ -106,60 +106,73 @@ const InvoicePage = ({history, match}) => {
 
     return (
         <>
-            {!edit && <h1>Création d'une facture</h1> || <h1>Modification de la facture</h1>}
-            { loading && <FormContentLoader/> }
-            { !loading && ( <form onSubmit={handleSubmit}>
-                <Field
-                    name="amount"
-                    type="number"
-                    placeholder="Entrer le montant"
-                    label="Montant du loyer HT"
-                    onChange={handleChange}
-                    value={invoice.amount}
-                    error={errors.amount}
-                />
-                    <Field
-                        name="fee"
-                        type="number"
-                        placeholder="Montant des charges"
-                        label="Montant des charges"
-                        onChange={handleChange}
-                        value={invoice.fee}
-                        error={errors.fee}
-                    />
-                <Select
-                    name="customer"
-                    label="Client"
-                    value={invoice.customer}
-                    error={errors.customer}
-                    onChange={handleChange}
-                >
-                    {customers.map(customer => (
-                        <option key={customer.id} value={customer.id}>
-                            {customer.firstname} {customer.lastname}
-                        </option>
-                    ))}
-                </Select>
-                <Select
-                    name="status"
-                    label="Statut"
-                    value={invoice.status}
-                    error={errors.status}
-                    onChange={handleChange}
-                >
-                    <option value="SENT">Envoyée</option>
-                    <option value="PAID">Payée</option>
-                    <option value="CANCELLED">Annulée</option>
-                </Select>
-                <div className="form-group">
-                    <button type="submit" className="btn btn-success">
-                        <FontAwesomeIcon icon={faSave} />
-                        Enregistrer
-                    </button>
-                    <Link to="/invoices" className="btn btn-link">Retour à la liste</Link>
-                </div>
-            </form>
-            )}
+            <div className="w-75 mx-auto">
+                {!edit && <h1 className="mb-3">Création d'une facture</h1> ||
+                <h1 className="mb-3">Modification de la facture</h1>}
+                { loading && <FormContentLoader/> }
+                { !loading && (
+                    <form onSubmit={handleSubmit}>
+                        <div className="row">
+                            <div className="col-6">
+                                <Field
+                                    isRequired={true}
+                                    name="amount"
+                                    type="number"
+                                    placeholder="Entrer le montant"
+                                    label="Montant du loyer HT"
+                                    onChange={handleChange}
+                                    value={invoice.amount}
+                                    error={errors.amount}
+                                />
+                                <Field
+                                    isRequired={true}
+                                    name="fee"
+                                    type="number"
+                                    placeholder="Montant des charges"
+                                    label="Montant des charges"
+                                    onChange={handleChange}
+                                    value={invoice.fee}
+                                    error={errors.fee}
+                                />
+                            </div>
+                            <div className="col-6">
+                                <Select
+                                    name="customer"
+                                    label="Client"
+                                    value={invoice.customer}
+                                    error={errors.customer}
+                                    onChange={handleChange}
+                                >
+                                    {customers.map(customer => (
+                                        <option key={customer.id} value={customer.id}>
+                                            {customer.firstname} {customer.lastname}
+                                        </option>
+                                    ))}
+                                </Select>
+                                <Select
+                                    name="status"
+                                    label="Statut"
+                                    value={invoice.status}
+                                    error={errors.status}
+                                    onChange={handleChange}
+                                >
+                                    <option value="SENT">Envoyée</option>
+                                    <option value="PAID">Payée</option>
+                                    <option value="CANCELLED">Annulée</option>
+                                </Select>
+                            </div>
+                        </div>
+                        <div className="form-group d-flex justify-content-end">
+                            <button type="submit" className="btn btn-success">
+                                <FontAwesomeIcon icon={faSave} />
+                                Enregistrer
+                            </button>
+                            <Link to="/invoices" className="btn btn-link">Retour à la liste</Link>
+                        </div>
+                    </form>
+                )}
+            </div>
+
         </>
     );
 };

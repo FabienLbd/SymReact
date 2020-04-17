@@ -37,30 +37,32 @@ const LoginPage = ({onLogin, history}) => {
 
     return (
         <>
-            <h1>Connexion à l'application</h1>
-            <form onSubmit={handleSubmit}>
-                <Field label="Adresse email"
-                       name="username"
-                       value={credentials.username}
-                       onChange={handleChange}
-                       type="email"
-                       placeholder="Adresse email de connexion"
-                       error={error}
-                />
-                <Field label="Mot de passe"
-                       name="password"
-                       value={credentials.password}
-                       onChange={handleChange}
-                       type="password"
-                       id="password"
-                       error=""
-                />
-                <div className="form-group">
-                    <button type="submit" className="btn btn-success">
-                        Je me connecte
-                    </button>
-                </div>
-            </form>
+            <div className="w-75 mx-auto">
+                <h1>Connexion à l'application</h1>
+                <form onSubmit={handleSubmit}>
+                    <Field label="Adresse email"
+                           name="username"
+                           value={credentials.username}
+                           onChange={handleChange}
+                           type="email"
+                           placeholder="Adresse email de connexion"
+                           error={error}
+                    />
+                    <Field label="Mot de passe"
+                           name="password"
+                           value={credentials.password}
+                           onChange={handleChange}
+                           type="password"
+                           id="password"
+                           error=""
+                    />
+                    <div className="form-group d-flex justify-content-end">
+                        <button type="submit" className="btn btn-success">
+                            Je me connecte
+                        </button>
+                    </div>
+                </form>
+            </div>
         </>
     );
 };
