@@ -11,18 +11,18 @@
     width: 210mm;
     height: 297mm ;
     margin: auto;
+    padding-top: 8px;
 }
 
 .invoice-show {
     margin: auto;
     font-size: 1rem;
-    width: 208mm;
-    height: 295mm;
-    padding: 0;
+    width: 203.5mm;
+    height: 290.5mm;
+    padding: 8px;
 }
 .invoice-head {
     margin-bottom: 100px;
-    padding: 20px;
 }
 .table-invoice td {
     text-align: center;

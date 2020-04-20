@@ -70,6 +70,7 @@ const InvoiceShow = ({ match, history }) => {
                 <h2 className="m-0">Aperçu de la facture</h2>
                 <Pdf targetRef={ref}
                      filename={fileName}
+                     x={2} y={2}
                      onComplete={onComplete}>
                     {({ toPdf }) =>
                         <button className="btn btn-danger" onClick={toPdf}>
