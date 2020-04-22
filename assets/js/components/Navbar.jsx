@@ -1,10 +1,11 @@
 import React, {useContext} from 'react';
 import AuthAPI from '../services/authAPI';
-import {NavLink} from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 import AuthContext from "../contexts/AuthContext";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsers, faTimesCircle, faFile } from '@fortawesome/fontawesome-free-solid';
+import {faUsers, faTimesCircle, faFile, faUserCircle} from '@fortawesome/fontawesome-free-solid';
+import authAPI from "../services/authAPI";
 
 const Navbar = ({history}) => {
     const { isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
@@ -15,6 +16,8 @@ const Navbar = ({history}) => {
         toast.info("Vous êtes désormais déconnecté !");
         history.push("/login");
     };
+
+    const userId = authAPI.getAuthenticatedUser();
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -46,12 +49,20 @@ const Navbar = ({history}) => {
                             <NavLink to="/login" className="btn btn-success">Connexion !</NavLink>
                         </li>
                     </> || (
+                    <>
+                        <li className="nav-item">
+                            <Link className="nav-link" to={"/users/" + userId}>
+                                <FontAwesomeIcon icon={faUserCircle} />
+                                Profile
+                            </Link>
+                        </li>
                         <li className="nav-item">
                             <button onClick={handleLogout} className="btn btn-danger">
                                 <FontAwesomeIcon icon={faTimesCircle} />
                                 Déconnexion
                             </button>
                         </li>
+                    </>
                     )}
 
                 </ul>

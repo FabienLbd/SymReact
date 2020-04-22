@@ -15,11 +15,11 @@ import RegisterPage from "./pages/RegisterPage";
 import {ToastContainer} from "react-toastify";
 import { toast } from "react-toastify";
 import InvoiceShow from "./pages/InvoiceShow";
+import UserPage from "./pages/UserPage";
+import UserEdit from "./pages/UserEdit";
 
 import '../css/app.css';
 import 'react-toastify/dist/ReactToastify.css';
-
-
 
 
 AuthAPI.setup();
@@ -41,6 +41,8 @@ const App = () => {
                     <Switch>
                         <Route path="/login" component={LoginPage} />
                         <Route path="/register" component={RegisterPage} />
+                        <PrivateRoute path="/user/edit/:id" component={UserEdit} />
+                        <PrivateRoute path="/users/:id" component={UserPage} />
                         <PrivateRoute path="/invoice/:id" component={InvoiceShow} />
                         <PrivateRoute path="/invoices/:id" component={InvoicePage} />
                         <PrivateRoute path="/invoices" component={InvoicesPage} />

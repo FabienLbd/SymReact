@@ -5,7 +5,7 @@ import customersAPI from "../services/customersAPI";
 import { toast } from "react-toastify";
 import FormContentLoader from "../components/loaders/FormContentLoader";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faSave, faTrashAlt} from '@fortawesome/fontawesome-free-solid';
+import {faSave} from '@fortawesome/fontawesome-free-solid';
 
 const CustomerPage = ({match, history}) => {
     const { id = "new" } = match.params;

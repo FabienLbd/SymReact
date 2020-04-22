@@ -14,6 +14,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ApiResource(
+ *     collectionOperations={
+ *         "get",
+ *         "post"={"validation_groups"={"Default", "postValidation"}}
+ *     },
+ *     itemOperations={
+ *        "get",
+ *        "put"
+ *     },
  *     normalizationContext={"groups"={"users_read"}}
  * )
  * @UniqueEntity("email", message="Un utilisateur ayant cette adresse email existe déjà")
@@ -31,7 +39,10 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
-     * @Assert\NotBlank(message="L'email doit être renseigné")
+     * @Assert\NotBlank(
+     *     message="L'email doit être renseigné",
+     *     groups={"postValidation"}
+     * )
      * @Assert\Email(message="L'adresse email doit avoir un format valide")
      */
     private $email;
@@ -44,14 +55,20 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Assert\NotBlank(message="Le mot de passe est obligatoire")
+     * @Assert\NotBlank(
+     *     message="Le mot de passe est obligatoire",
+     *     groups={"postValidation"}
+     *     )
      */
     private $password;
 
     /**
      * @var string The hashed confirmed password
-     * @Assert\NotBlank(message="La confirmation du mot de passe est obligatoire")
-     * @Assert\IdenticalTo(propertyPath="password", message="La confirmation du mot de passe n'est pas valide")
+     * @Assert\IdenticalTo(
+     *     propertyPath="password",
+     *     message="La confirmation du mot de passe n'est pas valide",
+     *     groups={"postValidation"}
+     *     )
      */
     private $passwordConfirm;
 

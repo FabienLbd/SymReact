@@ -47,6 +47,14 @@ function setup() {
     }
 }
 
+function getAuthenticatedUser() {
+    const token = window.localStorage.getItem("authToken");
+    if (token) {
+        const dataFromToken = jwtDecode(token);
+        return dataFromToken.id;
+    }
+}
+
 /**
  * Permet de savoir si on est authentifié ou pas
  * @returns {boolean}
@@ -67,5 +75,6 @@ export default {
     authenticate,
     logout,
     setup,
-    isAuthenticated
+    isAuthenticated,
+    getAuthenticatedUser
 }
