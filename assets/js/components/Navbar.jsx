@@ -42,7 +42,7 @@ const Navbar = ({history}) => {
                 </ul>
                 <ul className="navbar-nav ml-auto">
                     {!isAuthenticated && <>
-                        <li className="nav-item">
+                        <li className="nav-item align-self-center">
                             <NavLink to="/register" className="nav-link">Inscription</NavLink>
                         </li>
                         <li className="nav-item">
@@ -50,14 +50,14 @@ const Navbar = ({history}) => {
                         </li>
                     </> || (
                     <>
-                        <li className="nav-item">
-                            <Link className="nav-link" to={"/users/" + userId}>
+                        <li className="nav-item align-self-center">
+                            <NavLink className="nav-link" to={"/users/" + userId}>
                                 <FontAwesomeIcon icon={faUserCircle} />
                                 Profile
-                            </Link>
+                            </NavLink>
                         </li>
                         <li className="nav-item">
-                            <button onClick={handleLogout} className="btn btn-danger">
+                            <button onClick={handleLogout} className="btn btn-outline-danger">
                                 <FontAwesomeIcon icon={faTimesCircle} />
                                 Déconnexion
                             </button>

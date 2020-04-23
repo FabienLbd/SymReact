@@ -4,9 +4,9 @@ import InvoicesAPI from "../services/invoicesAPI";
 import moment from "moment";
 import {Link} from "react-router-dom";
 import { toast } from "react-toastify";
-import TableLoader from "../components/loaders/TableLoader";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faTrashAlt, faPencilAlt, faEye, faPlusCircle} from '@fortawesome/fontawesome-free-solid';
+import SpinnerLoader from "../components/loaders/SpinnerLoader";
 
 const STATUS_CLASSES = {
     PAID: "success",
@@ -34,7 +34,7 @@ const InvoicesPage = (props) => {
             setInvoices(data);
             setLoading(false);
         } catch (error) {
-            toast.error("Erreur lors du chargement des factures !");
+            toast.error("Oups! Il y a eu un problème lors du chargement des factures !");
         }
     };
 
@@ -53,9 +53,9 @@ const InvoicesPage = (props) => {
 
         try {
             await InvoicesAPI.delete(id)
-            toast.success("La facture à bien été supprimée !");
+            toast.success("Ok! La facture à bien été supprimée !");
         } catch (error) {
-            toast.error("Une erreur est survenue !");
+            toast.error("Oups! Une erreur est survenue !");
             setInvoices(originalInvoices);
         }
     };
@@ -101,8 +101,6 @@ const InvoicesPage = (props) => {
                     <th>Numéro</th>
                     <th>Client</th>
                     <th className="text-center">Date d'envoi</th>
-                    <th className="text-center">Créée le</th>
-                    <th className="text-center">Mise à jour le</th>
                     <th className="text-center">Statut</th>
                     <th className="text-center">Montant</th>
                     <th/>
@@ -110,19 +108,17 @@ const InvoicesPage = (props) => {
                 </thead>
                 { !loading && ( <tbody>
                 {paginatedInvoices.map(invoice => <tr key={invoice.id}>
-                        <td>{invoice.chrono}</td>
-                        <td>
+                        <td className="align-middle">{invoice.chrono}</td>
+                        <td className="align-middle">
                             <Link to={"/customers/" + invoice.customer.id}>
                                 {invoice.customer.firstname} {invoice.customer.lastname}
                             </Link>
                         </td>
-                        <td className="text-center">{formatDate(invoice.sentAt)}</td>
-                        <td className="text-center">{formatDate(invoice.createdAt)}</td>
-                        <td className="text-center">{formatDate(invoice.updatedAt)}</td>
-                        <td className="text-center">
+                        <td className="text-center align-middle">{formatDate(invoice.sentAt)}</td>
+                        <td className="text-center align-middle">
                             <span className={"badge badge-" + STATUS_CLASSES[invoice.status]}>{STATUS_LABELS[invoice.status]}</span>
                         </td>
-                        <td className="text-center">{invoice.amount.toLocaleString()} $</td>
+                        <td className="text-center align-middle">{invoice.amount.toLocaleString()} $</td>
                         <td>
                             <Link className="btn btn-sm btn-primary mr-1" to={"/invoices/" + invoice.id}>
                                 <FontAwesomeIcon icon={faPencilAlt} />
@@ -146,7 +142,7 @@ const InvoicesPage = (props) => {
                 </tbody>
                 )}
             </table>
-            {loading && <TableLoader/>}
+            {loading && <SpinnerLoader/>}
             {itemsPerPage < filteredInvoices.length && (
                 <Pagination currentPage={currentPage}
                             itemsPerPage={itemsPerPage}

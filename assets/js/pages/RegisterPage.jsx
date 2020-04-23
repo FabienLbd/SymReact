@@ -47,7 +47,7 @@ const RegisterPage = ({ history }) => {
             setErrors({});
             await axios.post(USERS_API, user);
             history.replace("/login");
-            toast.success("Vous êtes désormais inscrit vous pouvez vous connecter");
+            toast.success("Parfait! Vous êtes désormais inscrit vous pouvez vous connecter");
         }  catch (error) {
             const { violations } = error.response.data;
             if (violations) {
@@ -56,7 +56,7 @@ const RegisterPage = ({ history }) => {
                     apiErrors[propertyPath] = message;
                 });
                 setErrors(apiErrors);
-                toast.error("Il y a des erreurs dans votre formulaire !");
+                toast.error("Oups! Il y a des erreurs dans votre formulaire !");
             }
         }
     };

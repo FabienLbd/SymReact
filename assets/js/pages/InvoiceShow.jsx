@@ -42,7 +42,7 @@ const InvoiceShow = ({ match, history }) => {
     const fileName = `facture-${months[invoiceMonth]}-${invoice.customer.company}`;
 
     const onComplete = () => {
-        toast.success("Le fichier pdf a bien été téléchargé !");
+        toast.success("Ok! Le fichier pdf a bien été téléchargé !");
     };
 
     //Récuperation d'une facture en fonction de l'Id
@@ -51,7 +51,7 @@ const InvoiceShow = ({ match, history }) => {
             const { amount, customer, sentAt, fee, chrono, user } = await invoicesAPI.findInvoice(id);
             setInvoice({ amount, customer, sentAt, fee, chrono, user });
         } catch (error) {
-            toast.error("Impossible de charger la facture demandée !");
+            toast.error("Oups! Impossible de charger la facture demandée !");
             history.replace("/invoices");
         }
     };
@@ -67,7 +67,7 @@ const InvoiceShow = ({ match, history }) => {
     return(
         <>
             <div className="mb-5 d-flex justify-content-around">
-                <h2 className="m-0">Aperçu de la facture</h2>
+                <h2 className="my-0 align-self-center">Aperçu de la facture</h2>
                 <Pdf targetRef={ref}
                      filename={fileName}
                      x={2} y={2}

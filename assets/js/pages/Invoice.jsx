@@ -5,9 +5,9 @@ import {Link} from "react-router-dom";
 import customersAPI from "../services/customersAPI";
 import invoicesAPI from "../services/invoicesAPI";
 import { toast } from "react-toastify";
-import FormContentLoader from "../components/loaders/FormContentLoader";
-import {faSave} from "@fortawesome/fontawesome-free-solid";
+import {faSave, faChevronLeft} from "@fortawesome/fontawesome-free-solid";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import SpinnerLoader from "../components/loaders/SpinnerLoader";
 
 
 const InvoicePage = ({history, match}) => {
@@ -42,7 +42,7 @@ const InvoicePage = ({history, match}) => {
 
             if (!invoice.customer) setInvoice({...invoice, customer: data[0].id});
         } catch(error) {
-            toast.error("Impossible de charger les clients");
+            toast.error("Oups! Il semblerai qu'il y ai un problème pour charger les clients");
             history.replace("/invoices");
         }
     };
@@ -54,7 +54,7 @@ const InvoicePage = ({history, match}) => {
             setInvoice({ amount, status, customer: customer.id, fee });
             setLoading(false);
         } catch (error) {
-            toast.error("Impossible de charger la facture demandée !");
+            toast.error("Oh non! Impossible de charger la facture demandée !");
             history.replace("/invoices");
         }
     };
@@ -85,10 +85,10 @@ const InvoicePage = ({history, match}) => {
             setErrors({});
             if (edit) {
                 await invoicesAPI.editInvoice(id, invoice);
-                toast.success("La facture a bien été modifiée !");
+                toast.success("Parfait! La facture a bien été modifiée !");
             } else {
                 await invoicesAPI.createInvoice(invoice);
-                toast.success("La facture a bien été enregistrée !");
+                toast.success("Ok! La facture a bien été enregistrée !");
                 history.replace("/invoices");
             }
         } catch ({response}) {
@@ -99,7 +99,7 @@ const InvoicePage = ({history, match}) => {
                     apiErrors[propertyPath] = message;
                 });
                 setErrors(apiErrors);
-                toast.error("Il y a des erreurs dans votre formulaire !");
+                toast.error("Oups! Il semblerai qu'il y ai des erreurs dans votre formulaire !");
             }
         }
     };
@@ -109,7 +109,7 @@ const InvoicePage = ({history, match}) => {
             <div className="w-75 mx-auto">
                 {!edit && <h1 className="mb-3">Création d'une facture</h1> ||
                 <h1 className="mb-3">Modification de la facture</h1>}
-                { loading && <FormContentLoader/> }
+                { loading && <SpinnerLoader/> }
                 { !loading && (
                     <form onSubmit={handleSubmit}>
                         <div className="row">
@@ -163,11 +163,13 @@ const InvoicePage = ({history, match}) => {
                             </div>
                         </div>
                         <div className="form-group d-flex justify-content-end">
+                            <Link to="/invoices" className="btn btn-link">
+                                <FontAwesomeIcon icon={faChevronLeft} />
+                                Retour à la liste</Link>
                             <button type="submit" className="btn btn-success">
                                 <FontAwesomeIcon icon={faSave} />
                                 Enregistrer
                             </button>
-                            <Link to="/invoices" className="btn btn-link">Retour à la liste</Link>
                         </div>
                     </form>
                 )}

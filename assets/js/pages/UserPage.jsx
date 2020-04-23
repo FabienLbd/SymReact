@@ -6,9 +6,12 @@ import axios from 'axios';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPencilAlt} from "@fortawesome/fontawesome-free-solid";
 import {Link} from "react-router-dom";
+import SpinnerLoader from "../components/loaders/SpinnerLoader";
 
 const UserPage = ({ match, history }) => {
     const { id } = match.params;
+
+    const [loading, setLoading] = useState(true);
 
     const [user, setUser] = useState({
         firstname: "",
@@ -29,8 +32,9 @@ const UserPage = ({ match, history }) => {
                 await axios.get(USERS_API + "/" + id)
                            .then(response => response.data);
             setUser({ firstname, lastname, email, address, postalCode, city, numTVA, company } );
+            setLoading(false);
         } catch (error) {
-            toast.error("Une erreur est survenue ou la requête ne vous ai pas autorisée ");
+            toast.error("Une erreur est survenue ou cette action ne vous ai pas autorisée ");
             history.replace("/");
         }
     };
@@ -51,6 +55,7 @@ const UserPage = ({ match, history }) => {
                         Editer le profile
                     </Link>
                 </div>
+                { !loading && (
                 <table className="table table-borderless table-striped">
                     <tbody>
                     <tr>
@@ -70,7 +75,7 @@ const UserPage = ({ match, history }) => {
                         <td>{user.address}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Code postale</th>
+                        <th scope="row">Code postal</th>
                         <td>{user.postalCode}</td>
                     </tr>
                     <tr>
@@ -87,6 +92,8 @@ const UserPage = ({ match, history }) => {
                     </tr>
                     </tbody>
                 </table>
+                )}
+                { loading && <SpinnerLoader/> }
             </div>
         </>
     );

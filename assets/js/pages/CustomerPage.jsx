@@ -3,9 +3,9 @@ import Field from "../components/forms/Field";
 import {Link} from "react-router-dom";
 import customersAPI from "../services/customersAPI";
 import { toast } from "react-toastify";
-import FormContentLoader from "../components/loaders/FormContentLoader";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faSave} from '@fortawesome/fontawesome-free-solid';
+import {faChevronLeft, faSave} from '@fortawesome/fontawesome-free-solid';
+import SpinnerLoader from "../components/loaders/SpinnerLoader";
 
 const CustomerPage = ({match, history}) => {
     const { id = "new" } = match.params;
@@ -40,7 +40,7 @@ const CustomerPage = ({match, history}) => {
             setCustomer({ firstname, lastname, email, address, city, postalCode, company });
             setLoading(false);
         } catch (error) {
-            toast.error("Le client n'a pas pu être chargé !");
+            toast.error("Oups! Le client n'a pas pu être chargé !");
             history.replace("/customers");
         }
     };
@@ -67,10 +67,10 @@ const CustomerPage = ({match, history}) => {
             setErrors({});
             if (edit) {
                 await customersAPI.editCustomer(id, customer);
-                toast.success("Le client a bien été modifiée !");
+                toast.success("Super! Le client a bien été modifié !");
             } else {
                 await customersAPI.createCustomer(customer);
-                toast.success("Le client a bien été enregistré !");
+                toast.success("Parfait! Le client a bien été enregistré !");
                 history.replace("/customers");
             }
         } catch ({response}) {
@@ -81,7 +81,7 @@ const CustomerPage = ({match, history}) => {
                     apiErrors[propertyPath] = message;
                 });
                 setErrors(apiErrors);
-                toast.error("Il y a des erreurs dans votre formulaire !");
+                toast.error("Oups! Il y a des erreurs dans votre formulaire !");
             }
         }
     };
@@ -90,7 +90,7 @@ const CustomerPage = ({match, history}) => {
         <>
             <div className="w-75 mx-auto">
                 {!edit && <h1>Création d'un client</h1> || <h1>Modification du client</h1>}
-                { loading && <FormContentLoader /> }
+                { loading && <SpinnerLoader/> }
 
                 { !loading && (
                     <form onSubmit={handleSubmit}>
@@ -168,11 +168,14 @@ const CustomerPage = ({match, history}) => {
                             error={errors.company}
                         />
                         <div className="form-group d-flex justify-content-end">
+                            <Link to="/customers" className="btn btn-link">
+                                <FontAwesomeIcon icon={faChevronLeft} />
+                                Retour à la liste
+                            </Link>
                             <button type="submit" className="btn btn-success">
                                 <FontAwesomeIcon icon={faSave} />
                                 Enregistrer
                             </button>
-                            <Link to="/customers" className="btn btn-link">Retour à la liste</Link>
                         </div>
                     </form>
                 )}

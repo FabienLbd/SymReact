@@ -3,9 +3,9 @@ import Pagination from "../components/Pagination";
 import CustomersAPI from "../services/customersAPI";
 import {Link} from "react-router-dom";
 import { toast } from "react-toastify";
-import TableLoader from "../components/loaders/TableLoader";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faTrashAlt, faPlusCircle} from '@fortawesome/fontawesome-free-solid';
+import SpinnerLoader from "../components/loaders/SpinnerLoader";
 
 const CustomersPage = (props) => {
     const [customers, setCustomers] = useState([]);
@@ -20,7 +20,7 @@ const CustomersPage = (props) => {
             setCustomers(data);
             setLoading(false);
         } catch (error) {
-            toast.error("Impossible de charger les clients");
+            toast.error("Oups! Il semblerai qu'il y ai un problème, veuillez réessayer");
         }
     };
 
@@ -35,10 +35,10 @@ const CustomersPage = (props) => {
         setCustomers(customers.filter(customer => customer.id !== id));
         try {
             await CustomersAPI.delete(id);
-            toast.success("Le client à bien été supprimée !");
+            toast.success("Ok! Le client à bien été supprimé !");
         } catch (error) {
             setCustomers(originalCustomers);
-            toast.error("Une erreur est survenue !");
+            toast.error("Oups! Il semblerai qu'il y ai un problème !");
         }
     };
 
@@ -93,17 +93,17 @@ const CustomersPage = (props) => {
                 { !loading && (
                     <tbody>
                     {paginatedCustomers.map(customer => <tr key={customer.id}>
-                            <td>
+                            <td className="align-middle">
                                 <Link to={"/customers/" + customer.id}>
                                     {customer.firstname} {customer.lastname}
                                 </Link>
                             </td>
-                            <td>{customer.email}</td>
-                            <td>{customer.company}</td>
-                            <td className="text-center">
+                            <td className="align-middle">{customer.email}</td>
+                            <td className="align-middle">{customer.company}</td>
+                            <td className="text-center align-middle">
                                 <span className="badge badge-primary">{customer.invoices.length}</span>
                             </td>
-                            <td className="text-center">{customer.totalAmount.toLocaleString()} $</td>
+                            <td className="text-center align-middle">{customer.totalAmount.toLocaleString()} $</td>
                             <td>
                                 <button
                                     onClick={() => handleDelete(customer.id)}
@@ -119,7 +119,7 @@ const CustomersPage = (props) => {
                 </tbody>
                 )}
             </table>
-            { loading && <TableLoader /> }
+            { loading && <SpinnerLoader/> }
             {itemsPerPage < filteredCustomers.length && (
                 <Pagination currentPage={currentPage}
                             itemsPerPage={itemsPerPage}

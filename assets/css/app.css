@@ -1,11 +1,14 @@
 /* Navbar */
 .fa-male, .fa-download, .fa-euro-sign, .fa-times-circle,
 .fa-trash-alt, .fa-pencil-alt, .fa-eye, .fa-plus-circle, .fa-file,
-.fa-users, .fa-save, .fa-user-circle
+.fa-users, .fa-save, .fa-user-circle, .fa-chevron-left
 {
     margin-right: 5px;
 }
 
+.navbar {
+    padding: 1rem;
+}
 .frame {
     border: solid 1px black;
     width: 210mm;
@@ -20,10 +23,17 @@
     width: 203.5mm;
     height: 290.5mm;
     padding: 8px;
+    color: black;
 }
+
+.invoice-show .table-invoice {
+    color: black;
+}
+
 .invoice-head {
     margin-bottom: 100px;
 }
+
 .table-invoice td {
     text-align: center;
 }
@@ -41,10 +51,5 @@
 }
 
 .strong {
-    font-weight: bolder;
-}
-
-@media print {
-    /* All your print styles go here */
-    /*#header, #footer, #nav { display: none !important; }*/
+    font-weight: bold;
 }

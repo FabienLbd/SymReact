@@ -6,9 +6,14 @@ import { USERS_API } from "../config";
 import Field from "../components/forms/Field";
 import axios from 'axios';
 import {Link} from "react-router-dom";
+import SpinnerLoader from "../components/loaders/SpinnerLoader";
+import {faChevronLeft} from "@fortawesome/fontawesome-free-solid";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const UserEdit = ({match, history}) => {
     const { id } = match.params;
+
+    const [loading, setLoading] = useState(false);
 
     const [user, setUser] = useState({
         firstname: "",
@@ -39,14 +44,16 @@ const UserEdit = ({match, history}) => {
                 await axios.get(USERS_API + "/" + id)
                            .then(response => response.data);
             setUser({ firstname, lastname, address, city, postalCode, numTVA, company, phone });
+            setLoading(false);
         } catch (error) {
-            toast.error("Les données n'ont pas pu être chargées !");
+            toast.error("Oups! Il y a eu un problème !");
             history.replace("/users/" + id);
         }
     };
 
     //Chargement du customer si besoin au chargement du composant ou au changement de l'Id
     useEffect(() => {
+        setLoading(true);
         fetchUser(id)
     }, [id]);
 
@@ -62,7 +69,7 @@ const UserEdit = ({match, history}) => {
         try {
             setErrors({});
             await axios.put(USERS_API + "/" + id, user)
-            toast.success("Votre profile a bien été modifié !");
+            toast.success("C'est bon! Votre profile a bien été modifié !");
             history.replace("/users/" + id)
         } catch ({response}) {
             const { violations } = response.data;
@@ -72,14 +79,16 @@ const UserEdit = ({match, history}) => {
                     apiErrors[propertyPath] = message;
                 });
                 setErrors(apiErrors);
-                toast.error("Il y a des erreurs dans votre formulaire !");
+                toast.error("Oups! Il y a des erreurs dans votre formulaire !");
             }
         }
     };
 
     return (
         <>
-            <h1>Modification des informations</h1>
+            <h1 className="mb-3">Modification des informations</h1>
+            { loading && <SpinnerLoader/> }
+            { !loading && (
             <form onSubmit={handleSubmit}>
                 <div className="row">
                     <div className="col-md-6">
@@ -186,10 +195,14 @@ const UserEdit = ({match, history}) => {
                     </div>
                 </div>
                 <div className="form-group d-flex justify-content-end">
-                    <Link to={"/users/" + id} className="btn btn-link">Retour au profile</Link>
+                    <Link to={"/users/" + id} className="btn btn-link">
+                        <FontAwesomeIcon icon={faChevronLeft} />
+                        Retour au profile
+                    </Link>
                     <button type="submit" className="btn btn-success">Enregistrer</button>
                 </div>
             </form>
+            )}
         </>
     );
 };
