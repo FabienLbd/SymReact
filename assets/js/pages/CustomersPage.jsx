@@ -26,7 +26,7 @@ const CustomersPage = (props) => {
 
     //Au chargement du composant, on va chercher les customers
     useEffect(() => {
-        fetchCustomers()
+        fetchCustomers();
     }, []);
 
     //Remove a customer
@@ -68,8 +68,8 @@ const CustomersPage = (props) => {
     return (
         <>
             <div className="mb-3 d-flex justify-content-between align-items-center">
-                <h1>Liste des clients</h1>
-                <Link className="btn btn-primary" to="/customers/new">
+                <h1 className="my-0">Liste des clients</h1>
+                <Link className="btn btn-outline-primary" to="/customers/new">
                     <FontAwesomeIcon icon={faPlusCircle} />
                     Créer un client
                 </Link>
@@ -82,12 +82,12 @@ const CustomersPage = (props) => {
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th>Client</th>
-                    <th>Email</th>
-                    <th>Entreprise</th>
-                    <th className="text-center">Factures</th>
-                    <th className="text-center">Montant total</th>
-                    <th/>
+                    <th className="text-warning">Client</th>
+                    <th className="text-warning">Email</th>
+                    <th className="text-warning">Entreprise</th>
+                    <th className="text-warning text-center">Factures</th>
+                    <th className="text-warning text-center">Montant total HT</th>
+                    <th className="text-warning text-center">Action</th>
                 </tr>
                 </thead>
                 { !loading && (
@@ -101,14 +101,14 @@ const CustomersPage = (props) => {
                             <td className="align-middle">{customer.email}</td>
                             <td className="align-middle">{customer.company}</td>
                             <td className="text-center align-middle">
-                                <span className="badge badge-primary">{customer.invoices.length}</span>
+                                <span className="badge badge-pill badge-primary">{customer.invoices.length}</span>
                             </td>
-                            <td className="text-center align-middle">{customer.totalAmount.toLocaleString()} $</td>
-                            <td>
+                            <td className="text-center align-middle">{customer.totalAmount.toLocaleString()} €</td>
+                            <td className="text-center">
                                 <button
                                     onClick={() => handleDelete(customer.id)}
                                     disabled={customer.invoices.length > 0}
-                                    className="btn btn-sm btn-danger"
+                                    className="btn btn-sm btn-outline-danger"
                                 >
                                     <FontAwesomeIcon icon={faTrashAlt} />
                                     Supprimer

@@ -1,11 +1,12 @@
-/* Navbar */
 .fa-male, .fa-download, .fa-euro-sign, .fa-times-circle,
 .fa-trash-alt, .fa-pencil-alt, .fa-eye, .fa-plus-circle, .fa-file,
 .fa-users, .fa-save, .fa-user-circle, .fa-chevron-left
 {
     margin-right: 5px;
 }
-
+.table th, .table td{
+    padding: 0.8rem;
+}
 .navbar {
     padding: 1rem;
 }
@@ -52,4 +53,19 @@
 
 .strong {
     font-weight: bold;
+}
+
+.Toastify__toast-body {
+    text-align: center;
+}
+.Toastify__toast--success {
+    background-color: #54a860 !important;
+}
+
+.Toastify__toast--error {
+    background-color: #d9534f !important;
+}
+
+.Toastify__toast--info {
+    background-color: #4782ae !important;
 }

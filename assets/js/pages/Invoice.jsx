@@ -166,7 +166,7 @@ const InvoicePage = ({history, match}) => {
                             <Link to="/invoices" className="btn btn-link">
                                 <FontAwesomeIcon icon={faChevronLeft} />
                                 Retour à la liste</Link>
-                            <button type="submit" className="btn btn-success">
+                            <button type="submit" className="btn btn-outline-success">
                                 <FontAwesomeIcon icon={faSave} />
                                 Enregistrer
                             </button>

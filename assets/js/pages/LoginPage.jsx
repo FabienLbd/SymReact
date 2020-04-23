@@ -57,7 +57,7 @@ const LoginPage = ({onLogin, history}) => {
                            error=""
                     />
                     <div className="form-group d-flex justify-content-end">
-                        <button type="submit" className="btn btn-success">
+                        <button type="submit" className="btn btn-outline-success">
                             Je me connecte
                         </button>
                     </div>

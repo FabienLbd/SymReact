@@ -211,7 +211,7 @@ const RegisterPage = ({ history }) => {
                         </div>
                     <div className="form-group d-flex justify-content-end">
                         <Link to="/login" className="btn btn-link">J'ai déjà un compte</Link>
-                        <button type="submit" className="btn btn-success">Confirmation</button>
+                        <button type="submit" className="btn btn-outline-success">Confirmation</button>
                     </div>
                 </form>
             </div>

@@ -199,7 +199,7 @@ const UserEdit = ({match, history}) => {
                         <FontAwesomeIcon icon={faChevronLeft} />
                         Retour au profile
                     </Link>
-                    <button type="submit" className="btn btn-success">Enregistrer</button>
+                    <button type="submit" className="btn btn-outline-success">Enregistrer</button>
                 </div>
             </form>
             )}

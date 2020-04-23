@@ -84,8 +84,8 @@ const InvoicesPage = (props) => {
     return (
         <>
             <div className="mb-3 d-flex justify-content-between align-items-center">
-                <h1>Liste des factures</h1>
-                <Link className="btn btn-primary" to="/invoices/new">
+                <h1 className="my-0">Liste des factures</h1>
+                <Link className="btn btn-outline-primary" to="/invoices/new">
                     <FontAwesomeIcon icon={faPlusCircle} />
                     Créer une facture
                 </Link>
@@ -98,40 +98,40 @@ const InvoicesPage = (props) => {
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th>Numéro</th>
-                    <th>Client</th>
-                    <th className="text-center">Date d'envoi</th>
-                    <th className="text-center">Statut</th>
-                    <th className="text-center">Montant</th>
-                    <th/>
+                    <th className="text-center text-warning">Numéro</th>
+                    <th className="text-warning">Client</th>
+                    <th className="text-warning">Date d'envoi</th>
+                    <th className="text-center text-warning">Statut</th>
+                    <th className="text-center text-warning">Montant</th>
+                    <th className="text-center text-warning">Actions</th>
                 </tr>
                 </thead>
                 { !loading && ( <tbody>
                 {paginatedInvoices.map(invoice => <tr key={invoice.id}>
-                        <td className="align-middle">{invoice.chrono}</td>
+                        <td className="text-center align-middle">{invoice.chrono}</td>
                         <td className="align-middle">
                             <Link to={"/customers/" + invoice.customer.id}>
                                 {invoice.customer.firstname} {invoice.customer.lastname}
                             </Link>
                         </td>
-                        <td className="text-center align-middle">{formatDate(invoice.sentAt)}</td>
+                        <td className="align-middle">{formatDate(invoice.sentAt)}</td>
                         <td className="text-center align-middle">
-                            <span className={"badge badge-" + STATUS_CLASSES[invoice.status]}>{STATUS_LABELS[invoice.status]}</span>
+                            <span className={"badge badge-pill badge-" + STATUS_CLASSES[invoice.status]}>{STATUS_LABELS[invoice.status]}</span>
                         </td>
-                        <td className="text-center align-middle">{invoice.amount.toLocaleString()} $</td>
-                        <td>
-                            <Link className="btn btn-sm btn-primary mr-1" to={"/invoices/" + invoice.id}>
+                        <td className="text-center align-middle">{invoice.amount.toLocaleString()} €</td>
+                        <td className="text-center">
+                            <Link className="btn btn-sm btn-outline-primary mr-1" to={"/invoices/" + invoice.id}>
                                 <FontAwesomeIcon icon={faPencilAlt} />
                                 Editer
                             </Link>
                             <button
                                 onClick={() => handleDelete(invoice.id)}
-                                className="btn btn-sm btn-danger"
+                                className="btn btn-sm btn-outline-danger"
                             >
                                 <FontAwesomeIcon icon={faTrashAlt} />
                                 Supprimer
                             </button>
-                            <Link className="btn btn-sm btn-primary ml-1" to={"/invoice/" + invoice.id}>
+                            <Link className="btn btn-sm btn-outline-primary ml-1" to={"/invoice/" + invoice.id}>
                                 <FontAwesomeIcon icon={faEye} />
                                 Détails
                             </Link>

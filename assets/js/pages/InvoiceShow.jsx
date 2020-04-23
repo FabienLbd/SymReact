@@ -66,20 +66,19 @@ const InvoiceShow = ({ match, history }) => {
 
     return(
         <>
-            <div className="mb-5 d-flex justify-content-around">
+            <div className="mb-3 d-flex justify-content-around">
                 <h2 className="my-0 align-self-center">Aperçu de la facture</h2>
                 <Pdf targetRef={ref}
                      filename={fileName}
                      x={2} y={2}
                      onComplete={onComplete}>
                     {({ toPdf }) =>
-                        <button className="btn btn-danger" onClick={toPdf}>
+                        <button className="btn btn-outline-danger" onClick={toPdf}>
                             <FontAwesomeIcon icon={faDownload} />
                             Télécharger en pdf
                         </button>}
                 </Pdf>
             </div>
-
             <div className="frame mb-3">
                 <div ref={ref} className="invoice-show">
                     <div className="d-flex justify-content-between invoice-head">

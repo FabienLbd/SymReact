@@ -172,7 +172,7 @@ const CustomerPage = ({match, history}) => {
                                 <FontAwesomeIcon icon={faChevronLeft} />
                                 Retour à la liste
                             </Link>
-                            <button type="submit" className="btn btn-success">
+                            <button type="submit" className="btn btn-outline-success">
                                 <FontAwesomeIcon icon={faSave} />
                                 Enregistrer
                             </button>

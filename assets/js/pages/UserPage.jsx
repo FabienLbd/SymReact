@@ -47,10 +47,10 @@ const UserPage = ({ match, history }) => {
 
     return (
         <>
-            <div className="w-75 mx-auto">
+            <div className="w-75 mx-auto mb-5">
                 <div className="mb-3 d-flex justify-content-between align-items-center">
-                    <h1 className="mb-3">Profile utilisateur</h1>
-                    <Link className="btn btn-primary" to={"/user/edit/" + id}>
+                    <h1 className="my-0">Profile utilisateur</h1>
+                    <Link className="btn btn-outline-primary" to={"/user/edit/" + id}>
                         <FontAwesomeIcon icon={faPencilAlt} />
                         Editer le profile
                     </Link>
@@ -59,35 +59,35 @@ const UserPage = ({ match, history }) => {
                 <table className="table table-borderless table-striped">
                     <tbody>
                     <tr>
-                        <th scope="row">Nom</th>
+                        <th className="text-warning" scope="row">Nom</th>
                         <td>{user.firstname}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Prénom</th>
+                        <th className="text-warning" scope="row">Prénom</th>
                         <td>{user.lastname}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Adresse email</th>
+                        <th className="text-warning" scope="row">Adresse email</th>
                         <td>{user.email}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Adresse postale</th>
+                        <th className="text-warning" scope="row">Adresse postale</th>
                         <td>{user.address}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Code postal</th>
+                        <th className="text-warning" scope="row">Code postal</th>
                         <td>{user.postalCode}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Ville</th>
+                        <th className="text-warning" scope="row">Ville</th>
                         <td>{user.city}</td>
                     </tr>
                     <tr>
-                    <th scope="row">Numéro de TVA</th>
+                    <th className="text-warning" scope="row">Numéro de TVA</th>
                         <td>{user.numTVA}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Nom de l'entreprise</th>
+                        <th className="text-warning" scope="row">Nom de l'entreprise</th>
                         <td>{user.company}</td>
                     </tr>
                     </tbody>
