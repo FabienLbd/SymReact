@@ -79,19 +79,19 @@ const RegisterPage = ({ history }) => {
                                 error={errors.firstname}
                             />
                         </div>
-                            <div className="col-md-6">
-                                <Field
-                                    isRequired={true}
-                                    name="lastname"
-                                    type="text"
-                                    placeholder="Votre nom de famille"
-                                    label="Nom de famille"
-                                    onChange={handleChange}
-                                    value={user.lastname}
-                                    error={errors.lastname}
-                                />
-                            </div>
+                        <div className="col-md-6">
+                            <Field
+                                isRequired={true}
+                                name="lastname"
+                                type="text"
+                                placeholder="Votre nom de famille"
+                                label="Nom de famille"
+                                onChange={handleChange}
+                                value={user.lastname}
+                                error={errors.lastname}
+                            />
                         </div>
+                    </div>
                         <div className="row">
                             <div className="col-md-6">
                                 <Field

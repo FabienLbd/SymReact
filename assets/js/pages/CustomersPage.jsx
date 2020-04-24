@@ -79,7 +79,7 @@ const CustomersPage = (props) => {
                 <input type="text" onChange={handleSearch} value={search} className="form-control"
                        placeholder="Rechercher ..."/>
             </div>
-            <table className="table table-hover">
+            <table className="table table-hover table-responsive-md">
                 <thead>
                 <tr>
                     <th className="text-warning">Client</th>

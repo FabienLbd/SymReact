@@ -95,7 +95,7 @@ const InvoicesPage = (props) => {
                 <input type="text" onChange={handleSearch} value={search} className="form-control"
                        placeholder="Rechercher ..."/>
             </div>
-            <table className="table table-hover">
+            <table className="table table-hover table-responsive-md">
                 <thead>
                 <tr>
                     <th className="text-center text-warning">Numéro</th>
@@ -104,6 +104,7 @@ const InvoicesPage = (props) => {
                     <th className="text-center text-warning">Statut</th>
                     <th className="text-center text-warning">Montant</th>
                     <th className="text-center text-warning">Actions</th>
+                    <th className="text-center text-warning">Détails</th>
                 </tr>
                 </thead>
                 { !loading && ( <tbody>
@@ -120,18 +121,20 @@ const InvoicesPage = (props) => {
                         </td>
                         <td className="text-center align-middle">{invoice.amount.toLocaleString()} €</td>
                         <td className="text-center">
-                            <Link className="btn btn-sm btn-outline-primary mr-1" to={"/invoices/" + invoice.id}>
+                            <Link className="btn btn-sm btn-outline-primary text-center mr-md-1" to={"/invoices/" + invoice.id}>
                                 <FontAwesomeIcon icon={faPencilAlt} />
                                 Editer
                             </Link>
                             <button
                                 onClick={() => handleDelete(invoice.id)}
-                                className="btn btn-sm btn-outline-danger"
+                                className="btn btn-sm btn-outline-danger text-center"
                             >
                                 <FontAwesomeIcon icon={faTrashAlt} />
                                 Supprimer
                             </button>
-                            <Link className="btn btn-sm btn-outline-primary ml-1" to={"/invoice/" + invoice.id}>
+                        </td>
+                        <td className="text-center">
+                            <Link className="btn btn-sm btn-outline-primary text-center" to={"/invoice/" + invoice.id}>
                                 <FontAwesomeIcon icon={faEye} />
                                 Détails
                             </Link>

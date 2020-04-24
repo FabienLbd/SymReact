@@ -16,25 +16,33 @@ const InvoiceShow = ({ match, history }) => {
         user: ""
     });
 
-    const months = {
-        1: "Janvier",
-        2: "Février",
-        3: "Mars",
-        4: "Avril",
-        5: "Mai",
-        6: "Juin",
-        7: "Juillet",
-        8: "Août",
-        9: "Septembre",
-        10: "Octobre",
-        11: "Novembre",
-        12: "Décembre"
-    };
+    const months = [
+        "Janvier",
+        "Février",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Août",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Décembre"
+    ];
 
-    const date = new Date();
-    date.setDate(1);
+    //Gestion de la date de facturation
+    const now = new Date();
+    let invoiceDate;
+    const year = now.getFullYear();
+    let invoiceMonth = now.getMonth();
 
-    const invoiceMonth = date.getMonth() + 1;
+    if (now.getDate() > 25 && now.getDate() < 31) {
+        invoiceMonth = now.getMonth() + 1;
+        invoiceDate = new Date(year, invoiceMonth, 1);
+    } else {
+        invoiceDate = new Date(year, invoiceMonth, 1 );
+    }
 
     //Gestion de l'extraction en pdf
     const ref = React.createRef();
@@ -97,7 +105,7 @@ const InvoiceShow = ({ match, history }) => {
                         </div>
                         <div>
                             <p>Merignac le,</p>
-                            <p>{date.toLocaleDateString()}</p>
+                            <p>{invoiceDate.toLocaleDateString()}</p>
                         </div>
                     </div>
                     <div className="pl-2">
@@ -107,7 +115,7 @@ const InvoiceShow = ({ match, history }) => {
                         <table className="table table-borderless table-striped table-invoice">
                             <tbody>
                                 <tr>
-                                    <th scope="row">Période du mois d' {months[invoiceMonth] + " " + date.getFullYear()}</th>
+                                    <th scope="row">Période {months[invoiceMonth] + " " + year}</th>
                                     <td></td>
                                 </tr>
                                 <tr>

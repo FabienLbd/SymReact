@@ -113,7 +113,7 @@ const InvoicePage = ({history, match}) => {
                 { !loading && (
                     <form onSubmit={handleSubmit}>
                         <div className="row">
-                            <div className="col-6">
+                            <div className="col-md-6">
                                 <Field
                                     isRequired={true}
                                     name="amount"
@@ -124,6 +124,8 @@ const InvoicePage = ({history, match}) => {
                                     value={invoice.amount}
                                     error={errors.amount}
                                 />
+                            </div>
+                            <div className="col-md-6">
                                 <Field
                                     isRequired={true}
                                     name="fee"
@@ -135,7 +137,9 @@ const InvoicePage = ({history, match}) => {
                                     error={errors.fee}
                                 />
                             </div>
-                            <div className="col-6">
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
                                 <Select
                                     name="customer"
                                     label="Client"
@@ -149,6 +153,8 @@ const InvoicePage = ({history, match}) => {
                                         </option>
                                     ))}
                                 </Select>
+                            </div>
+                            <div className="col-md-6">
                                 <Select
                                     name="status"
                                     label="Statut"

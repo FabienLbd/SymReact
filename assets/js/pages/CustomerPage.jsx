@@ -95,7 +95,7 @@ const CustomerPage = ({match, history}) => {
                 { !loading && (
                     <form onSubmit={handleSubmit}>
                         <div className="row">
-                            <div className="col-6">
+                            <div className="col-md-6">
                                 <Field
                                     isRequired={true}
                                     name="lastname"
@@ -105,6 +105,8 @@ const CustomerPage = ({match, history}) => {
                                     onChange={handleChange}
                                     error={errors.lastname}
                                 />
+                            </div>
+                            <div className="col-md-6">
                                 <Field
                                     isRequired={true}
                                     name="firstname"
@@ -114,6 +116,10 @@ const CustomerPage = ({match, history}) => {
                                     onChange={handleChange}
                                     error={errors.firstname}
                                 />
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
                                 <Field
                                     isRequired={true}
                                     name="email"
@@ -125,7 +131,7 @@ const CustomerPage = ({match, history}) => {
                                     error={errors.email}
                                 />
                             </div>
-                            <div className="col-6">
+                            <div className="col-md-6">
                                 <Field
                                     isRequired={true}
                                     name="address"
@@ -136,6 +142,10 @@ const CustomerPage = ({match, history}) => {
                                     onChange={handleChange}
                                     error={errors.address}
                                 />
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
                                 <Field
                                     isRequired={true}
                                     name="postalCode"
@@ -146,6 +156,8 @@ const CustomerPage = ({match, history}) => {
                                     onChange={handleChange}
                                     error={errors.postalCode}
                                 />
+                            </div>
+                            <div className="col-md-6">
                                 <Field
                                     isRequired={true}
                                     name="city"
@@ -158,15 +170,19 @@ const CustomerPage = ({match, history}) => {
                                 />
                             </div>
                         </div>
-                        <Field
-                            isRequired={true}
-                            name="company"
-                            label="Entreprise"
-                            placeholder="Entreprise du client"
-                            value={customer.company}
-                            onChange={handleChange}
-                            error={errors.company}
-                        />
+                        <div className="row">
+                            <div className="col-12">
+                                <Field
+                                    isRequired={true}
+                                    name="company"
+                                    label="Entreprise"
+                                    placeholder="Entreprise du client"
+                                    value={customer.company}
+                                    onChange={handleChange}
+                                    error={errors.company}
+                                />
+                            </div>
+                        </div>
                         <div className="form-group d-flex justify-content-end">
                             <Link to="/customers" className="btn btn-link">
                                 <FontAwesomeIcon icon={faChevronLeft} />
