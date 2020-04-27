@@ -1,9 +1,15 @@
 import axios from "axios";
 import { CUSTOMERS_API } from "../config";
 
-function findAll() {
+function findAllActiveCustomers() {
     return axios
-        .get(CUSTOMERS_API)
+        .get(`${CUSTOMERS_API}?isArchived=false`)
+        .then(response => response.data['hydra:member']);
+}
+
+function findAllArchivedCustomers() {
+    return axios
+        .get(`${CUSTOMERS_API}?isArchived=true`)
         .then(response => response.data['hydra:member']);
 }
 
@@ -29,7 +35,8 @@ function findCustomer(id) {
 }
 
 export default {
-    findAll,
+    findAllActiveCustomers,
+    findAllArchivedCustomers,
     delete: deleteCustomer,
     createCustomer,
     findCustomer,

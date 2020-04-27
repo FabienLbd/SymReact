@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faChevronLeft, faSave} from '@fortawesome/fontawesome-free-solid';
 import SpinnerLoader from "../components/loaders/SpinnerLoader";
+import Select from "../components/forms/Select";
 
 const CustomerPage = ({match, history}) => {
     const { id = "new" } = match.params;
@@ -17,7 +18,8 @@ const CustomerPage = ({match, history}) => {
         address: "",
         postalCode: "",
         city: "",
-        company: ""
+        company: "",
+        isArchived: ""
     });
 
     const [errors, setErrors] = useState({
@@ -27,7 +29,8 @@ const CustomerPage = ({match, history}) => {
         address: "",
         postalCode: "",
         city: "",
-        company: ""
+        company: "",
+        isArchived: ""
     });
 
     const [edit, setEdit] = useState(false);
@@ -36,8 +39,9 @@ const CustomerPage = ({match, history}) => {
     //Récuperation d'un customer en fonction de l'Id
     const fetchCustomer = async id => {
         try {
-            const { firstname, lastname, email, address, city, postalCode, company } = await customersAPI.findCustomer(id);
-            setCustomer({ firstname, lastname, email, address, city, postalCode, company });
+            const { firstname, lastname, email, address, city, postalCode, company, isArchived } =
+                await customersAPI.findCustomer(id);
+            setCustomer({ firstname, lastname, email, address, city, postalCode, company, isArchived });
             setLoading(false);
         } catch (error) {
             toast.error("Oups! Le client n'a pas pu être chargé !");
@@ -56,8 +60,11 @@ const CustomerPage = ({match, history}) => {
 
     //Gestion du changement dans les inputs du formulaire
     const handleChange = ({currentTarget}) => {
-        const {value, name} = currentTarget;
-        setCustomer({...customer, [name]: value})
+        let {value, name} = currentTarget;
+        if (value === "true" || value === "false") {
+            value = JSON.parse(value);
+        }
+        setCustomer({...customer, [name]: value});
     };
 
     //Gestion de la soumission du formulaire
@@ -171,7 +178,7 @@ const CustomerPage = ({match, history}) => {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-12">
+                            <div className={edit ? "col-md-6" : "col-12"}>
                                 <Field
                                     isRequired={true}
                                     name="company"
@@ -182,6 +189,18 @@ const CustomerPage = ({match, history}) => {
                                     error={errors.company}
                                 />
                             </div>
+                            {edit &&
+                            <div className="col-md-6">
+                                <Select
+                                    name="isArchived"
+                                    label="Satut du client"
+                                    value={customer.isArchived}
+                                    onChange={handleChange}
+                                >
+                                    <option value={true}>Client archivé</option>
+                                    <option value={false}>Client actif</option>
+                                </Select>
+                            </div>}
                         </div>
                         <div className="form-group d-flex justify-content-end">
                             <Link to="/customers" className="btn btn-link">

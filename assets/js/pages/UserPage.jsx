@@ -50,7 +50,7 @@ const UserPage = ({ match, history }) => {
             <div className="w-75 mx-auto mb-5">
                 <div className="mb-3 d-flex justify-content-between align-items-center">
                     <h1 className="my-0">Profile utilisateur</h1>
-                    <Link className="btn btn-outline-primary" to={"/user/edit/" + id}>
+                    <Link className="btn btn-outline-primary" to={"/users/edit/" + id}>
                         <FontAwesomeIcon icon={faPencilAlt} />
                         Editer le profile
                     </Link>

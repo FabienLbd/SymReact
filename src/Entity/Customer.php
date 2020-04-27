@@ -7,12 +7,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
@@ -26,8 +25,8 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  *          "groups"={"customers_read"}
  *     }
  * )
- * @ApiFilter(SearchFilter::class)
- * @ApiFilter(OrderFilter::class)
+ * @ApiFilter(BooleanFilter::class, properties={"isArchived"})
+ *
  */
 class Customer
 {
@@ -130,6 +129,12 @@ class Customer
      * )
      */
     private $city;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"customers_read"})
+     */
+    private $isArchived = false;
 
     public function __construct()
     {
@@ -286,6 +291,18 @@ class Customer
     public function setCity(string $city): self
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    public function getIsArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): self
+    {
+        $this->isArchived = $isArchived;
 
         return $this;
     }

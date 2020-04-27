@@ -134,7 +134,7 @@ const InvoicesPage = (props) => {
                             </button>
                         </td>
                         <td className="text-center">
-                            <Link className="btn btn-sm btn-outline-primary text-center" to={"/invoice/" + invoice.id}>
+                            <Link className="btn btn-sm btn-outline-primary text-center" to={"/invoices/show/" + invoice.id}>
                                 <FontAwesomeIcon icon={faEye} />
                                 Détails
                             </Link>

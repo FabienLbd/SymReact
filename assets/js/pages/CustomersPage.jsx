@@ -4,7 +4,7 @@ import CustomersAPI from "../services/customersAPI";
 import {Link} from "react-router-dom";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faTrashAlt, faPlusCircle} from '@fortawesome/fontawesome-free-solid';
+import {faTrashAlt, faPlusCircle, faChevronLeft, faEye} from '@fortawesome/fontawesome-free-solid';
 import SpinnerLoader from "../components/loaders/SpinnerLoader";
 
 const CustomersPage = (props) => {
@@ -12,17 +12,28 @@ const CustomersPage = (props) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setsearch] = useState("");
     const [loading, setLoading] = useState(true);
+    const [isDisplayingArchive, setIsDisplayingArchive] = useState(false);
 
     //Permet d'aller récupérer les customers
     const fetchCustomers = async () => {
         try {
-            const data = await CustomersAPI.findAll();
+            const data = await CustomersAPI.findAllActiveCustomers();
             setCustomers(data);
             setLoading(false);
         } catch (error) {
             toast.error("Oups! Il semblerai qu'il y ai un problème, veuillez réessayer");
         }
     };
+
+    const fetchArchivedCustomers = async () => {
+        try {
+            const archivedData = await CustomersAPI.findAllArchivedCustomers();
+            setCustomers(archivedData);
+            setLoading(false);
+        } catch(error) {
+            toast.error("Oups! Il semblerai qu'il y ai un problème, veuillez réessayer");
+        }
+    }
 
     //Au chargement du composant, on va chercher les customers
     useEffect(() => {
@@ -51,6 +62,18 @@ const CustomersPage = (props) => {
         setCurrentPage(1);
     };
 
+    const switchToArchived = () => {
+        setLoading(true);
+        setCustomers([]);
+        if (isDisplayingArchive === false) {
+            fetchArchivedCustomers();
+            setIsDisplayingArchive(true);
+        } else {
+            fetchCustomers();
+            setIsDisplayingArchive(false);
+        }
+    }
+
     const itemsPerPage = 10;
 
     //Filtrage des customers en fonction de la recherche
@@ -68,11 +91,26 @@ const CustomersPage = (props) => {
     return (
         <>
             <div className="mb-3 d-flex justify-content-between align-items-center">
-                <h1 className="my-0">Liste des clients</h1>
-                <Link className="btn btn-outline-primary" to="/customers/new">
-                    <FontAwesomeIcon icon={faPlusCircle} />
-                    Créer un client
-                </Link>
+                {!isDisplayingArchive && <h1>Liste des clients</h1> || <h1>Liste des clients archivés</h1>}
+                <div>
+                    <button className="btn btn-outline-primary mr-2" onClick={switchToArchived}>
+                        { isDisplayingArchive &&
+                            <>
+                                <FontAwesomeIcon icon={faChevronLeft} />
+                                Retour aux clients actifs
+                            </> ||
+                            <>
+                                <FontAwesomeIcon icon={faEye} />
+                                voir les clients archivés
+                            </>
+
+                        }
+                    </button>
+                    <Link className="btn btn-outline-primary" to="/customers/new">
+                        <FontAwesomeIcon icon={faPlusCircle} />
+                        Créer un client
+                    </Link>
+                </div>
             </div>
 
             <div className="form-group">
