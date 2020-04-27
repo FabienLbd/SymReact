@@ -40,7 +40,7 @@ class Customer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"customers_read", "invoices_read"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource"})
      */
     private $id;
 
@@ -58,7 +58,7 @@ class Customer
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource"})
      * @Assert\NotBlank(message="Le nom de famille du customer est obligatoire")
      * @Assert\Length(
      *      min=3,

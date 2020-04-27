@@ -36,7 +36,7 @@ const InvoicePage = ({history, match}) => {
     //Récuperation de la liste des customers
     const fetchCustomers = async () => {
         try {
-            const data = await customersAPI.findAll();
+            const data = await customersAPI.findAllActiveCustomers();
             setCustomers(data);
             setLoading(false);
 
@@ -169,7 +169,7 @@ const InvoicePage = ({history, match}) => {
                             </div>
                         </div>
                         <div className="form-group d-flex justify-content-end">
-                            <Link to="/invoices" className="btn btn-link">
+                            <Link to={"/customers/" + invoice.customer + "/invoices/"} className="btn btn-link">
                                 <FontAwesomeIcon icon={faChevronLeft} />
                                 Retour à la liste</Link>
                             <button type="submit" className="btn btn-outline-success">

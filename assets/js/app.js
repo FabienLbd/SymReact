@@ -10,7 +10,8 @@ import AuthAPI from './services/authAPI';
 import AuthContext from './contexts/AuthContext';
 import PrivateRoute from "./components/PrivateRoute";
 import CustomerPage from "./pages/CustomerPage";
-import InvoicePage from "./pages/Invoice";
+import CustomerInvoicesPage from "./pages/CustomerInvoicesPage";
+import Invoice from "./pages/Invoice";
 import RegisterPage from "./pages/RegisterPage";
 import {ToastContainer} from "react-toastify";
 import { toast } from "react-toastify";
@@ -44,8 +45,9 @@ const App = () => {
                         <PrivateRoute path="/users/edit/:id" component={UserEdit} />
                         <PrivateRoute path="/users/:id" component={UserPage} />
                         <PrivateRoute path="/invoices/show/:id" component={InvoiceShow} />
-                        <PrivateRoute path="/invoices/:id" component={InvoicePage} />
+                        <PrivateRoute path="/invoices/:id" component={Invoice} />
                         <PrivateRoute path="/invoices" component={InvoicesPage} />
+                        <PrivateRoute path="/customers/:id/invoices" component={CustomerInvoicesPage} />
                         <PrivateRoute path="/customers/:id" component={CustomerPage} />
                         <PrivateRoute path="/customers" component={CustomersPage} />
                         <Route path="/" component={HomePage} />

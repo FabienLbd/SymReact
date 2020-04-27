@@ -74,7 +74,7 @@ class Invoice
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="invoices")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"invoices_read"})
+     * @Groups({"invoices_read", "invoices_subresource"})
      * @Assert\NotBlank(message="Le client de la facture est obligatoire")
      *
      */

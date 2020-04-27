@@ -1,9 +1,15 @@
 import axios from "axios";
-import { INVOICES_API } from "../config";
+import { INVOICES_API, CUSTOMERS_API } from "../config";
 
 function findAll() {
     return axios
         .get(INVOICES_API)
+        .then(response => response.data['hydra:member']);
+}
+
+function findInvoicesByCustomer(id) {
+    return axios
+        .get(CUSTOMERS_API + "/" + id + "/invoices")
         .then(response => response.data['hydra:member']);
 }
 
@@ -25,11 +31,13 @@ function createInvoice(invoice) {
 }
 
 function editInvoice(id, invoice) {
-    axios.put(INVOICES_API + "/" + id, {...invoice, customer: `/api/customers/${invoice.customer}`});
+    axios.put(INVOICES_API + "/" + id,
+        {...invoice, customer: `/api/customers/${invoice.customer}`});
 }
 
 export default {
     findAll,
+    findInvoicesByCustomer,
     delete: deleteInvoice,
     findInvoice,
     createInvoice,

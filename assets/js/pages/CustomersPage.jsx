@@ -125,7 +125,7 @@ const CustomersPage = (props) => {
                     <th className="text-warning">Entreprise</th>
                     <th className="text-warning text-center">Factures</th>
                     <th className="text-warning text-center">Montant total HT</th>
-                    <th className="text-warning text-center">Action</th>
+                    <th className="text-warning text-center">Actions</th>
                 </tr>
                 </thead>
                 { !loading && (
@@ -146,11 +146,15 @@ const CustomersPage = (props) => {
                                 <button
                                     onClick={() => handleDelete(customer.id)}
                                     disabled={customer.invoices.length > 0}
-                                    className="btn btn-sm btn-outline-danger"
+                                    className="btn btn-sm btn-outline-danger mr-1"
                                 >
                                     <FontAwesomeIcon icon={faTrashAlt} />
                                     Supprimer
                                 </button>
+                                <Link className="btn btn-sm btn-outline-primary" to={"/customers/" + customer.id + "/invoices"}>
+                                    <FontAwesomeIcon icon={faEye} />
+                                    Factures
+                                </Link>
                             </td>
                         </tr>
                     )}
