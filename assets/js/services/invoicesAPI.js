@@ -7,9 +7,9 @@ function findAll() {
         .then(response => response.data['hydra:member']);
 }
 
-function findInvoicesByCustomer(id) {
+function findInvoicesByCustomer(id, order, sortProperty) {
     return axios
-        .get(CUSTOMERS_API + "/" + id + "/invoices")
+        .get(CUSTOMERS_API + "/" + id + "/invoices?order[" + sortProperty + "]=" + order)
         .then(response => response.data['hydra:member']);
 }
 

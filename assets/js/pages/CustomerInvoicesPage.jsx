@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faTrashAlt, faPencilAlt, faEye, faPlusCircle} from '@fortawesome/fontawesome-free-solid';
 import SpinnerLoader from "../components/loaders/SpinnerLoader";
+import {faSortAmountDown, faSortAmountUpAlt} from "@fortawesome/free-solid-svg-icons";
 
 const STATUS_CLASSES = {
     PAID: "success",
@@ -25,15 +26,17 @@ const CustomerInvoicesPage = ({match}) => {
     const [invoices, setInvoices] = useState([]);
     const [currentCustomer, setCurrentCustomer] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    const [search, setsearch] = useState("");
+    const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
-    const itemsPerPage = 20;
+    const [order, setOrder] = useState("desc");
+    const [iconName, setIconName] = useState("");
+    const itemsPerPage = 10;
     const {id} = match.params;
 
     //Permet d'aller récupérer les factures
-    const fetchInvoices = async () => {
+    const fetchInvoices = async (id, order, sortProperty = "chrono") => {
         try {
-            const data = await InvoicesAPI.findInvoicesByCustomer(id);
+            const data = await InvoicesAPI.findInvoicesByCustomer(id, order, sortProperty);
             setInvoices(data);
             setLoading(false);
         } catch (error) {
@@ -53,7 +56,7 @@ const CustomerInvoicesPage = ({match}) => {
 
     //Au chargement du composant, on va chercher les factures
     useEffect(() => {
-        fetchInvoices();
+        fetchInvoices(id, order);
     }, []);
 
     useEffect(() => {
@@ -82,7 +85,7 @@ const CustomerInvoicesPage = ({match}) => {
 
     //gestion de la recherche
     const handleSearch = ({currentTarget}) => {
-        setsearch(currentTarget.value);
+        setSearch(currentTarget.value);
         setCurrentPage(1);
     };
 
@@ -95,6 +98,19 @@ const CustomerInvoicesPage = ({match}) => {
 
     //Pagination des données
     const paginatedInvoices = Pagination.getData(filteredInvoices, currentPage, itemsPerPage);
+
+    const sort = ({currentTarget}) => {
+        const targetId = currentTarget.id;
+        setLoading(true);
+        setInvoices([]);
+        if (order === "desc") {
+            setOrder("asc");
+        } else {
+            setOrder("desc");
+        }
+        setIconName(`${targetId}-${order}`);
+        fetchInvoices(id, order, targetId);
+    }
 
     return (
         <>
@@ -113,10 +129,61 @@ const CustomerInvoicesPage = ({match}) => {
             <table className="table table-hover table-responsive-md">
                 <thead>
                 <tr>
-                    <th className="text-center text-warning">Numéro</th>
-                    <th className="text-warning">Date d'envoi</th>
-                    <th className="text-center text-warning">Statut</th>
-                    <th className="text-center text-warning">Montant</th>
+                    <th className="text-center text-warning">
+                        Numéro
+                        <button
+                            id="chrono"
+                            onClick={sort}
+                            className="text-warning btn btn-sm btn-outline-light"
+                        >
+                            {iconName === "chrono-asc" ?
+                                <FontAwesomeIcon icon={faSortAmountUpAlt}/> :
+                                <FontAwesomeIcon icon={faSortAmountDown}/>
+                            }
+                        </button>
+                    </th>
+                    <th className="text-warning">
+                        Date d'envoi
+                        <button
+                            id="sentAt"
+                            onClick={sort}
+                            className="text-warning btn btn-sm btn-outline-light"
+                        >
+                            {iconName === "sentAt-asc" ?
+                                <FontAwesomeIcon icon={faSortAmountUpAlt} /> :
+                                <FontAwesomeIcon icon={faSortAmountDown} />
+
+                            }
+                        </button>
+                    </th>
+                    <th className="text-center text-warning">
+                        Statut
+                        <button
+                            id="status"
+                            onClick={sort}
+                            className="text-warning btn btn-sm btn-outline-light"
+                        >
+                            {iconName === "status-asc" ?
+                                <FontAwesomeIcon icon={faSortAmountUpAlt} /> :
+                                <FontAwesomeIcon icon={faSortAmountDown} />
+
+                            }
+                        </button>
+                    </th>
+                    <th className="text-center text-warning">
+                        Montant
+                        <button
+                            id="amount"
+                            onClick={sort}
+                            className="text-warning btn btn-sm btn-outline-light"
+                        >
+                            {iconName === "amount-asc" ?
+                                <FontAwesomeIcon icon={faSortAmountUpAlt} /> :
+                                <FontAwesomeIcon icon={faSortAmountDown} />
+
+                            }
+                        </button>
+                    </th>
                     <th className="text-center text-warning">Actions</th>
                     <th className="text-center text-warning">Détails</th>
                 </tr>

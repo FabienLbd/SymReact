@@ -28,7 +28,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  *     },
  *     denormalizationContext={"disable_type_enforcement"=true}
  * )
- * @ApiFilter(OrderFilter::class, properties={"amount", "sentAt"})
+ * @ApiFilter(OrderFilter::class, properties={"amount", "sentAt", "status", "chrono"})
  */
 class Invoice
 {
