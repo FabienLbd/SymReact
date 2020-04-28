@@ -169,7 +169,10 @@ const InvoicePage = ({history, match}) => {
                             </div>
                         </div>
                         <div className="form-group d-flex justify-content-end">
-                            <Link to={"/customers/" + invoice.customer + "/invoices/"} className="btn btn-link">
+                            <Link
+                                to={edit ? "/customers/" + invoice.customer + "/invoices/"
+                                    : "/invoices/"}
+                                className="btn btn-link">
                                 <FontAwesomeIcon icon={faChevronLeft} />
                                 Retour à la liste</Link>
                             <button type="submit" className="btn btn-outline-success">

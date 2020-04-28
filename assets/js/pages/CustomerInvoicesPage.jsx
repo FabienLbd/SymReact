@@ -99,10 +99,8 @@ const CustomerInvoicesPage = ({match}) => {
     //Pagination des données
     const paginatedInvoices = Pagination.getData(filteredInvoices, currentPage, itemsPerPage);
 
-    const sort = ({currentTarget}) => {
+    const handleSort = ({currentTarget}) => {
         const targetId = currentTarget.id;
-        setLoading(true);
-        setInvoices([]);
         if (order === "desc") {
             setOrder("asc");
         } else {
@@ -133,12 +131,13 @@ const CustomerInvoicesPage = ({match}) => {
                         Numéro
                         <button
                             id="chrono"
-                            onClick={sort}
+                            onClick={handleSort}
                             className="text-warning btn btn-sm btn-outline-light"
                         >
                             {iconName === "chrono-asc" ?
-                                <FontAwesomeIcon icon={faSortAmountUpAlt}/> :
-                                <FontAwesomeIcon icon={faSortAmountDown}/>
+                                <FontAwesomeIcon icon={faSortAmountUpAlt} /> :
+                                <FontAwesomeIcon icon={faSortAmountDown} />
+
                             }
                         </button>
                     </th>
@@ -146,7 +145,7 @@ const CustomerInvoicesPage = ({match}) => {
                         Date d'envoi
                         <button
                             id="sentAt"
-                            onClick={sort}
+                            onClick={handleSort}
                             className="text-warning btn btn-sm btn-outline-light"
                         >
                             {iconName === "sentAt-asc" ?
@@ -160,7 +159,7 @@ const CustomerInvoicesPage = ({match}) => {
                         Statut
                         <button
                             id="status"
-                            onClick={sort}
+                            onClick={handleSort}
                             className="text-warning btn btn-sm btn-outline-light"
                         >
                             {iconName === "status-asc" ?
@@ -174,7 +173,7 @@ const CustomerInvoicesPage = ({match}) => {
                         Montant
                         <button
                             id="amount"
-                            onClick={sort}
+                            onClick={handleSort}
                             className="text-warning btn btn-sm btn-outline-light"
                         >
                             {iconName === "amount-asc" ?
@@ -184,8 +183,8 @@ const CustomerInvoicesPage = ({match}) => {
                             }
                         </button>
                     </th>
-                    <th className="text-center text-warning">Actions</th>
-                    <th className="text-center text-warning">Détails</th>
+                    <th className="text-center text-warning align-middle">Actions</th>
+                    <th className="text-center text-warning align-middle">Détails</th>
                 </tr>
                 </thead>
                 { !loading && ( <tbody>

@@ -63,8 +63,6 @@ const CustomersPage = (props) => {
     };
 
     const switchToArchived = () => {
-        setLoading(true);
-        setCustomers([]);
         if (isDisplayingArchive === false) {
             fetchArchivedCustomers();
             setIsDisplayingArchive(true);
