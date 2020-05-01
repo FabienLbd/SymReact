@@ -90,6 +90,15 @@ const UserPage = ({ match, history }) => {
                         <th className="text-warning" scope="row">Nom de l'entreprise</th>
                         <td>{user.company}</td>
                     </tr>
+                    <tr>
+                        <th className="text-warning align-middle" scope="row">Changer de mot de passe</th>
+                        <td>
+                            <Link className="btn btn-sm btn-outline-primary" to={"/users/" + id + "/resetPassword"}>
+                                <FontAwesomeIcon icon={faPencilAlt} />
+                                Modifier mot de passe
+                            </Link>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
                 )}

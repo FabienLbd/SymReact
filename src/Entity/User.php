@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -41,7 +42,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *              "path"="/users/{id}/resetPassword",
  *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and object == user)",
  *              "denormalization_context"={"groups"={"reset_password"}},
- *              "validation_groups"={"Default", "reset_password"}
+ *              "validation_groups"={"reset_password"}
  *          }
  *     },
  * )
@@ -82,10 +83,23 @@ class User implements UserInterface
      * @SerializedName("password")
      * @Assert\NotBlank(
      *     message="Le mot de passe est obligatoire",
-     *     groups={"user_write"}
+     *     groups={"user_write", "reset_password"}
      *     )
      */
     private $plainPassword;
+
+    /**
+     * @Groups({"reset_password"})
+     * @Assert\NotBlank(
+     *     message="Le mot de passe est obligatoire",
+     *     groups={"reset_password"}
+     *     )
+     * @SecurityAssert\UserPassword(
+     *     groups={"reset_password"},
+     *     message = "Le mot de passe donné ne correspond pas !"
+     * )
+     */
+    private $oldPassword;
 
     /**
      * @var string The hashed password
@@ -99,7 +113,7 @@ class User implements UserInterface
      * @Assert\IdenticalTo(
      *     propertyPath="plainPassword",
      *     message="La confirmation du mot de passe n'est pas valide",
-     *     groups={"user_write"}
+     *     groups={"user_write", "reset_password"}
      *     )
      */
     private $passwordConfirm;
@@ -416,4 +430,22 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getOldPassword()
+    {
+        return $this->oldPassword;
+    }
+
+    /**
+     * @param mixed $oldPassword
+     */
+    public function setOldPassword($oldPassword): void
+    {
+        $this->oldPassword = $oldPassword;
+    }
+
+
 }
