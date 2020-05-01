@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
  *              "access_control"="is_granted('ROLE_ADMIN')"
  *          },
  *         "post"={
- *              "validation_groups"={"user_write"},
+ *              "validation_groups"={"Default", "user_write"},
  *              "denormalization_context"={"groups"={"user_write"}}
  *         }
  *     },
@@ -65,10 +65,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "user_write"})
-     * @Assert\NotBlank(
-     *     message="L'email doit être renseigné",
-     *     groups={"postValidation"}
-     * )
+     * @Assert\NotBlank(message="L'email doit être renseigné")
      * @Assert\Email(message="L'adresse email doit avoir un format valide")
      */
     private $email;
@@ -121,7 +118,9 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put", "user_write"})
-     * @Assert\NotBlank(message="Le prénom est obligatoire")
+     * @Assert\NotBlank(
+     *     message="Le prénom est obligatoire",
+     * )
      * @Assert\Length(
      *      min=3,
      *      minMessage="Le prénom doit faire entre 3 et 255 caractères",
