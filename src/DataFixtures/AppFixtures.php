@@ -24,7 +24,7 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        /*$faker = Factory::create('fr_FR');
+        $faker = Factory::create('fr_FR');
 
         for ($u = 0 ; $u < 10 ; $u++) {
             $user = new User();
@@ -76,7 +76,7 @@ class AppFixtures extends Fixture
                     $manager->persist($invoice);
                 }
             }
-        }*/
+        }
         $admin = new User();
         $admin->setFirstname('fabien')
             ->setLastname('labedade')
