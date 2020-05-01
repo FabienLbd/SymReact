@@ -15,19 +15,33 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ApiResource(
  *     collectionOperations={
- *         "get",
+ *         "get"={
+ *              "access_control"="is_granted('ROLE_ADMIN')"
+ *          },
  *         "post"={"validation_groups"={"Default", "postValidation"}}
  *     },
  *     itemOperations={
- *        "get",
- *        "put"
+ *          "get"={
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and object == user)",
+ *              "normalization_context"={"groups"={"users_read"}}
+ *          },
+ *          "put"={
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and object == user)",
+ *              "denormalization_context"={"groups"={"users_put"}}
+ *          },
+ *          "delete"={
+ *             "access_control"="is_granted('ROLE_ADMIN')"
+ *          }
  *     },
- *     normalizationContext={"groups"={"users_read"}}
  * )
  * @UniqueEntity("email", message="Un utilisateur ayant cette adresse email existe déjà")
  */
 class User implements UserInterface
 {
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_USER = 'ROLE_USER';
+    const DEFAULT_ROLE = 'ROLE_USER';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -73,24 +87,8 @@ class User implements UserInterface
     private $passwordConfirm;
 
     /**
-     * @return string
-     */
-    public function getPasswordConfirm(): string
-    {
-        return $this->passwordConfirm;
-    }
-
-    /**
-     * @param string $passwordConfirm
-     */
-    public function setPasswordConfirm(string $passwordConfirm): void
-    {
-        $this->passwordConfirm = $passwordConfirm;
-    }
-
-    /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put"})
      * @Assert\NotBlank(message="Le prénom est obligatoire")
      * @Assert\Length(
      *      min=3,
@@ -102,7 +100,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put"})
      * @Assert\NotBlank(message="Le nom de famille est obligatoire")
      * @Assert\Length(
      *      min=3,
@@ -119,42 +117,42 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put"})
      * @Assert\NotBlank(message="L'adresse est obligatoire")
      */
     private $address;
 
     /**
      * @ORM\Column(type="string")
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put"})
      * @Assert\NotBlank(message="Le code postal est obligatoire")
      */
     private $postalCode;
 
     /**
      * @ORM\Column(type="string")
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put"})
      * @Assert\NotBlank(message="Le numéro de TVA est obligatoire")
      */
     private $numTVA;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put"})
      * @Assert\NotBlank(message="Le nom de la société est obligatoire")
      */
     private $company;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put"})
      * @Assert\NotBlank(message="Le nom de la ville est obligatoire")
      */
     private $city;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put"})
      * @Assert\NotBlank(message="Le numéro de téléphone est obligatoire")
      */
     private $phone;
@@ -162,6 +160,7 @@ class User implements UserInterface
     public function __construct()
     {
         $this->customers = new ArrayCollection();
+        $this->roles[] = self::DEFAULT_ROLE;
     }
 
     public function getId(): ?int
@@ -197,8 +196,6 @@ class User implements UserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -206,8 +203,23 @@ class User implements UserInterface
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
-
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPasswordConfirm(): ?string
+    {
+        return $this->passwordConfirm;
+    }
+
+    /**
+     * @param string $passwordConfirm
+     */
+    public function setPasswordConfirm(string $passwordConfirm): void
+    {
+        $this->passwordConfirm = $passwordConfirm;
     }
 
     /**

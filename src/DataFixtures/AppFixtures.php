@@ -77,6 +77,19 @@ class AppFixtures extends Fixture
                 }
             }
         }
+        $admin = new User();
+        $admin->setFirstname('fabien')
+            ->setLastname('labedade')
+            ->setNumTVA(0)
+            ->setCompany('WCS')
+            ->setEmail('fabien.labedade@gmail.com')
+            ->setAddress('1 allée quiétude')
+            ->setPhone('0662434908')
+            ->setCity('Merignac')
+            ->setPostalCode('33700')
+            ->setPassword($this->encoder->encodePassword($admin, 'password'))
+            ->setRoles([User::ROLE_ADMIN]);
+        $manager->persist($admin);
 
         $manager->flush();
     }

@@ -16,6 +16,11 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
  * @ApiResource(
+ *     attributes={
+ *        "order"={
+ *          "lastname":"ASC"
+ *        }
+ *     },
  *     collectionOperations={"GET", "POST"},
  *     itemOperations={"GET", "PUT", "DELETE"},
  *     subresourceOperations={

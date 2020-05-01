@@ -21,7 +21,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  *     attributes={
  *          "pagination_enabled"=false,
  *          "pagination_items_per_page"=20,
- *          "order": {"sentAt":"desc"}
+ *          "order": {"status":"desc"}
  *     },
  *     normalizationContext={
  *          "groups"={"invoices_read"}
