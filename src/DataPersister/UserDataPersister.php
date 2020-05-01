@@ -3,9 +3,7 @@
 
 namespace App\DataPersister;
 
-
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
-use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -43,11 +41,8 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
     public function persist($data, array $context = [])
     {
         if ($data->getPlainPassword()) {
-            if ($context['item_operation_name'] === 'reset_password') {
-                $newEncodedPassword =
-                    $this->passwordEncoder->encodePassword($data, $data->getPlainPassword());
-                $data->setPassword($newEncodedPassword);
-            }
+            $hash = $this->passwordEncoder->encodePassword($data, $data->getPlainPassword());
+            $data->setPassword($hash);
             $data->eraseCredentials();
         }
 
