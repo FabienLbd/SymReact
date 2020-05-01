@@ -205,7 +205,6 @@ const CustomerInvoicesPage = ({match}) => {
                                     className="btn btn-sm btn-outline-danger text-center"
                                 >
                                     <FontAwesomeIcon icon={faTrashAlt} />
-                                    Supprimer
                                 </button>
                             </td>
                             <td className="text-center">

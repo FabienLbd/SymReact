@@ -147,7 +147,6 @@ const CustomersPage = (props) => {
                                     className="btn btn-sm btn-outline-danger mr-1"
                                 >
                                     <FontAwesomeIcon icon={faTrashAlt} />
-                                    Supprimer
                                 </button>
                                 <Link className="btn btn-sm btn-outline-primary" to={"/customers/" + customer.id + "/invoices"}>
                                     <FontAwesomeIcon icon={faEye} />
