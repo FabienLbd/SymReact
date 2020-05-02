@@ -19,7 +19,7 @@ const CustomerPage = ({match, history}) => {
         postalCode: "",
         city: "",
         company: "",
-        isArchived: ""
+        isArchived: false
     });
 
     const [errors, setErrors] = useState({
@@ -29,8 +29,7 @@ const CustomerPage = ({match, history}) => {
         address: "",
         postalCode: "",
         city: "",
-        company: "",
-        isArchived: ""
+        company: ""
     });
 
     const [edit, setEdit] = useState(false);
