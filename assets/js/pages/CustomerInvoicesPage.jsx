@@ -53,15 +53,16 @@ const CustomerInvoicesPage = ({match}) => {
             toast.error("Oups! Il y a eu un problème lors du chargement des factures !");
         }
     }
+    //Au chargement du composant, on va chercher le customer
+    useEffect(() => {
+        fetchcustomer(id);
+    }, [id])
 
     //Au chargement du composant, on va chercher les factures
     useEffect(() => {
         fetchInvoices(id, order);
     }, []);
 
-    useEffect(() => {
-        fetchcustomer(id);
-    }, [id])
 
     //Gestion du format de dates
     const formatDate = (str) => moment(str).format('DD/MM/YYYY');
@@ -170,7 +171,7 @@ const CustomerInvoicesPage = ({match}) => {
                         </button>
                     </th>
                     <th className="text-center text-warning">
-                        Montant
+                        Montant TTC
                         <button
                             id="amount"
                             onClick={handleSort}
@@ -194,7 +195,8 @@ const CustomerInvoicesPage = ({match}) => {
                             <td className="text-center align-middle">
                                 <span className={"badge badge-pill badge-" + STATUS_CLASSES[invoice.status]}>{STATUS_LABELS[invoice.status]}</span>
                             </td>
-                            <td className="text-center align-middle">{invoice.amount.toLocaleString()} €</td>
+                            <td className="text-center align-middle">{
+                                ((invoice.amount + invoice.fee ) + (invoice.amount + invoice.fee) * 0.20).toLocaleString()} €</td>
                             <td className="text-center">
                                 <Link className="btn btn-sm btn-outline-primary text-center mr-md-1" to={"/invoices/" + invoice.id}>
                                     <FontAwesomeIcon icon={faPencilAlt} />

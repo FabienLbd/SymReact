@@ -102,7 +102,7 @@ const InvoicesPage = (props) => {
                     <th className="text-warning">Client</th>
                     <th className="text-warning">Date d'envoi</th>
                     <th className="text-center text-warning">Statut</th>
-                    <th className="text-center text-warning">Montant</th>
+                    <th className="text-center text-warning">Montant TTC</th>
                     <th className="text-center text-warning">Actions</th>
                     <th className="text-center text-warning">Détails</th>
                 </tr>
@@ -119,7 +119,9 @@ const InvoicesPage = (props) => {
                         <td className="text-center align-middle">
                             <span className={"badge badge-pill badge-" + STATUS_CLASSES[invoice.status]}>{STATUS_LABELS[invoice.status]}</span>
                         </td>
-                        <td className="text-center align-middle">{invoice.amount.toLocaleString()} €</td>
+                        <td className="text-center align-middle">{
+                            ((invoice.amount + invoice.fee ) + (invoice.amount + invoice.fee) * 0.20).toLocaleString()} €
+                        </td>
                         <td className="text-center">
                             <Link className="btn btn-sm btn-outline-primary text-center mr-md-1" to={"/invoices/" + invoice.id}>
                                 <FontAwesomeIcon icon={faPencilAlt} />
