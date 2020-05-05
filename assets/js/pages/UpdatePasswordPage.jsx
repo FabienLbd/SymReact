@@ -5,7 +5,7 @@ import axios from "axios";
 import {USERS_API} from "../config";
 import AuthAPI from "../services/authAPI";
 
-const ResetPasswordPage = ({history, match}) => {
+const UpdatePasswordPage = ({history, match}) => {
     const { id } = match.params;
 
     const [user, setUser] = useState({
@@ -31,7 +31,7 @@ const ResetPasswordPage = ({history, match}) => {
         event.preventDefault();
         try {
             setErrors({});
-            await axios.put(USERS_API + "/" + id + "/resetPassword", user)
+            await axios.put(USERS_API + "/" + id + "/updatePassword", user)
             toast.success("C'est bon! Votre mot de passe a bien été modifié, vous devez vous réauthentifier !");
             AuthAPI.logout();
             history.replace("/login");
@@ -94,4 +94,4 @@ const ResetPasswordPage = ({history, match}) => {
     );
 };
 
-export default ResetPasswordPage;
+export default UpdatePasswordPage;

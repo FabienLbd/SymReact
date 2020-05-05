@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
+use App\Controller\UserResetPasswordAction;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -23,7 +24,13 @@ use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
  *         "post"={
  *              "validation_groups"={"Default", "user_write"},
  *              "denormalization_context"={"groups"={"user_write"}}
- *         }
+ *         },
+ *          "reset_password_request"={
+ *              "method"="POST",
+ *              "path"="/users/resetPasswordRequest",
+ *              "denormalization_context"={"groups"={"reset_password_request"}},
+ *              "validation_groups"={"reset_password_request"}
+ *          }
  *     },
  *     itemOperations={
  *          "get"={
@@ -37,12 +44,21 @@ use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
  *          "delete"={
  *             "access_control"="is_granted('ROLE_ADMIN')"
  *          },
+ *          "update_password"={
+ *              "method"="PUT",
+ *              "path"="/users/{id}/updatePassword",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and object == user)",
+ *              "denormalization_context"={"groups"={"update_password"}},
+ *              "validation_groups"={"update_password"}
+ *          },
  *          "reset_password"={
  *              "method"="PUT",
- *              "path"="/users/{id}/resetPassword",
- *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and object == user)",
+ *              "path"="/users/{token}/resetPassword",
  *              "denormalization_context"={"groups"={"reset_password"}},
- *              "validation_groups"={"reset_password"}
+ *              "validation_groups"={"reset_password"},
+ *              "controller"=UserResetPasswordAction::class,
+ *              "defaults"={"identifiedBy"="token"},
+ *               "read"=false
  *          }
  *     },
  * )
@@ -64,9 +80,24 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "user_write"})
-     * @Assert\NotBlank(message="L'email doit être renseigné")
-     * @Assert\Email(message="L'adresse email doit avoir un format valide")
+     * @Groups(
+     *     {
+     *     "customers_read",
+     *     "invoices_read",
+     *     "invoices_subresource",
+     *     "users_read",
+     *     "user_write",
+     *     "reset_password_request"
+     *     }
+     *)
+     * @Assert\NotBlank(
+     *     message="L'email doit être renseigné",
+     *     groups={"reset_password_request"}
+     * )
+     * @Assert\Email(
+     *     message="L'adresse email doit avoir un format valide",
+     *     groups={"reset_password_request"}
+     * )
      */
     private $email;
 
@@ -76,23 +107,23 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @Groups({"reset_password", "user_write"})
+     * @Groups({"update_password", "user_write", "reset_password"})
      * @SerializedName("password")
      * @Assert\NotBlank(
      *     message="Le mot de passe est obligatoire",
-     *     groups={"user_write", "reset_password"}
+     *     groups={"user_write", "update_password", "reset_password"}
      *     )
      */
     private $plainPassword;
 
     /**
-     * @Groups({"reset_password"})
+     * @Groups({"update_password"})
      * @Assert\NotBlank(
      *     message="Le mot de passe est obligatoire",
-     *     groups={"reset_password"}
+     *     groups={"update_password"}
      *     )
      * @SecurityAssert\UserPassword(
-     *     groups={"reset_password"},
+     *     groups={"update_password"},
      *     message = "Le mot de passe donné ne correspond pas !"
      * )
      */
@@ -106,11 +137,11 @@ class User implements UserInterface
 
     /**
      * @var string The hashed confirmed password
-     * @Groups({"reset_password", "user_write"})
+     * @Groups({"update_password", "user_write", "reset_password"})
      * @Assert\IdenticalTo(
      *     propertyPath="plainPassword",
      *     message="La confirmation du mot de passe n'est pas valide",
-     *     groups={"user_write", "reset_password"}
+     *     groups={"user_write", "update_password", "reset_password"}
      *     )
      */
     private $passwordConfirm;
@@ -187,6 +218,17 @@ class User implements UserInterface
      * @Assert\NotBlank(message="Le numéro de téléphone est obligatoire")
      */
     private $phone;
+
+    /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     * @Groups({"reset_password"})
+     */
+    private $resetPasswordToken;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $resetPasswordGeneratedAt;
 
     public function __construct()
     {
@@ -446,5 +488,27 @@ class User implements UserInterface
         $this->oldPassword = $oldPassword;
     }
 
+    public function getResetPasswordToken(): ?string
+    {
+        return $this->resetPasswordToken;
+    }
 
+    public function setResetPasswordToken(?string $resetPasswordToken): self
+    {
+        $this->resetPasswordToken = $resetPasswordToken;
+
+        return $this;
+    }
+
+    public function getResetPasswordGeneratedAt(): ?\DateTimeInterface
+    {
+        return $this->resetPasswordGeneratedAt;
+    }
+
+    public function setResetPasswordGeneratedAt(?\DateTimeInterface $resetPasswordGeneratedAt): self
+    {
+        $this->resetPasswordGeneratedAt = $resetPasswordGeneratedAt;
+
+        return $this;
+    }
 }
