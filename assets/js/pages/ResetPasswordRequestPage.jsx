@@ -29,14 +29,18 @@ const ResetPasswordRequestPage = ({ history}) => {
             history.replace("/");
         } catch ({response}) {
             const { violations } = response.data;
+            const message = response.data['hydra:description'];
             if (violations) {
                 const apiErrors = {};
                 violations.map(({propertyPath, message}) => {
                     apiErrors[propertyPath] = message;
                 });
                 setErrors(apiErrors);
+            } else if(message) {
+                toast.error(message);
+            } else {
+                toast.error('Oups! Une erreur est survenue.');
             }
-            toast.error("Aucun compte ne possède cette adresse email !");
         }
     };
 

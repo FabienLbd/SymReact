@@ -33,14 +33,18 @@ const ResetPasswordPage = ({ history, match}) => {
             history.replace("/login");
         } catch ({response}) {
             const { violations } = response.data;
+            const message = response.data['hydra:description'];
             if (violations) {
                 const apiErrors = {};
                 violations.map(({propertyPath, message}) => {
                     apiErrors[propertyPath] = message;
                 });
                 setErrors(apiErrors);
+            } else if(message)  {
+                toast.error(message);
+            } else {
+                toast.error('Oups! Une erreur est survenue.');
             }
-            toast.error("Il y a des erreurs dans votre formulaire !");
         }
     };
 

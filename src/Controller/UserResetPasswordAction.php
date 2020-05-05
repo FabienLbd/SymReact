@@ -30,14 +30,18 @@ class UserResetPasswordAction
 
         $user = $this->userRepository->findOneBy(['resetPasswordToken' => $token]);
         if (!$user) {
-            throw new NotFoundHttpException('L\'utilisateur n\'a pas été trouvé');
+            throw new NotFoundHttpException(
+                'L\'utilisateur n\'a pas été trouvé.'
+            );
         }
 
         $now = new \DateTime();
         $resetPasswordGeneratedAt = $user->getResetPasswordGeneratedAt();
 
         if ($resetPasswordGeneratedAt->getTimestamp() + 900 < $now->getTimestamp()) {
-            throw new NotFoundHttpException('Le lien de réinitialisation du mot de passe a expiré.');
+            throw new NotFoundHttpException(
+                'Le lien de réinitialisation du mot de passe a expiré, veuillez en redemander un nouveau.'
+            );
         }
 
         $newPassword = $data->getPlainPassword();
