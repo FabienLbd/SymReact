@@ -3,6 +3,7 @@ import AuthAPI from '../services/authAPI';
 import AuthContext from "../contexts/AuthContext";
 import Field from "../components/forms/Field";
 import { toast } from "react-toastify";
+import {Link} from "react-router-dom";
 
 const LoginPage = ({onLogin, history}) => {
     const {setIsAuthenticated} = useContext(AuthContext);
@@ -57,6 +58,7 @@ const LoginPage = ({onLogin, history}) => {
                            error=""
                     />
                     <div className="form-group d-flex justify-content-end">
+                        <Link to="/reset/password" className="btn btn-link">Mot de passe oublié ?</Link>
                         <button type="submit" className="btn btn-outline-success">
                             Je me connecte
                         </button>

@@ -22,6 +22,8 @@ import UpdatePasswordPage from "./pages/UpdatePasswordPage";
 
 import '../css/app.css';
 import 'react-toastify/dist/ReactToastify.css';
+import ResetPasswordRequestPage from "./pages/ResetPasswordRequestPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 AuthAPI.setup();
 
@@ -42,7 +44,9 @@ const App = () => {
                     <Switch>
                         <Route path="/login" component={LoginPage} />
                         <Route path="/register" component={RegisterPage} />
-                        <PrivateRoute path="/users/:id/resetPassword" component={UpdatePasswordPage} />
+                        <Route path="/users/:token/reset/password" component={ResetPasswordPage} />
+                        <Route path="/reset/password" component={ResetPasswordRequestPage} />
+                        <PrivateRoute path="/users/:id/update/password" component={UpdatePasswordPage} />
                         <PrivateRoute path="/users/edit/:id" component={UserEdit} />
                         <PrivateRoute path="/users/:id" component={UserPage} />
                         <PrivateRoute path="/invoices/show/:id" component={InvoiceShow} />
