@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import Field from "../components/forms/Field";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -7,9 +7,11 @@ import AuthAPI from "../services/authAPI";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/fontawesome-free-solid";
 import {Link} from "react-router-dom";
+import AuthContext from "../contexts/AuthContext";
 
 const UpdatePasswordPage = ({history, match}) => {
     const { id } = match.params;
+    const { isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
 
     const [user, setUser] = useState({
         oldPassword: "",
@@ -36,6 +38,7 @@ const UpdatePasswordPage = ({history, match}) => {
             setErrors({});
             await axios.put(USERS_API + "/" + id + "/updatePassword", user)
             toast.success("C'est bon! Votre mot de passe a bien été modifié, vous devez vous réauthentifier !");
+            setIsAuthenticated(false);
             AuthAPI.logout();
             history.replace("/login");
         } catch ({response}) {
