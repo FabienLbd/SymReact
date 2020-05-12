@@ -9,6 +9,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
@@ -148,12 +149,13 @@ class Customer
 
     /**
      * @Groups({"customers_read"})
+     * @SerializedName("totalAmount")
      * @return float
      */
     public function getTotalAmount(): float
     {
         return array_reduce($this->invoices->toarray(), function($total, $invoice) {
-            return $total + $invoice->getAmount() + $invoice->getFee();
+            return $total + ($invoice->getStatus() === "PAID" ? $invoice->getTotalAmountTTC() : 0);
         }, 0);
     }
 
@@ -175,7 +177,7 @@ class Customer
 
     public function getFirstname(): ?string
     {
-        return $this->firstname;
+        return ucfirst($this->firstname);
     }
 
     public function setFirstname(string $firstname): self
@@ -187,7 +189,7 @@ class Customer
 
     public function getLastname(): ?string
     {
-        return $this->lastname;
+        return ucfirst($this->lastname);
     }
 
     public function setLastname(string $lastname): self
@@ -211,7 +213,7 @@ class Customer
 
     public function getCompany(): ?string
     {
-        return $this->company;
+        return ucfirst($this->company);
     }
 
     public function setCompany(?string $company): self
@@ -290,7 +292,7 @@ class Customer
 
     public function getCity(): ?string
     {
-        return $this->city;
+        return ucfirst($this->city);
     }
 
     public function setCity(string $city): self

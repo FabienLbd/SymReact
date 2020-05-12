@@ -184,6 +184,7 @@ const CustomerInvoicesPage = ({match}) => {
                             }
                         </button>
                     </th>
+                    <th className="text-center text-warning align-middle">Rappel</th>
                     <th className="text-center text-warning align-middle">Actions</th>
                     <th className="text-center text-warning align-middle">Détails</th>
                 </tr>
@@ -195,8 +196,8 @@ const CustomerInvoicesPage = ({match}) => {
                             <td className="text-center align-middle">
                                 <span className={"badge badge-pill badge-" + STATUS_CLASSES[invoice.status]}>{STATUS_LABELS[invoice.status]}</span>
                             </td>
-                            <td className="text-center align-middle">{
-                                ((invoice.amount + invoice.fee ) + (invoice.amount + invoice.fee) * 0.20).toLocaleString()} €</td>
+                            <td className="text-center align-middle">{(invoice.total)} €</td>
+                            <td className="text-center align-middle">{invoice.isReminderInvoice ? "Oui" : "Non"}</td>
                             <td className="text-center">
                                 <Link className="btn btn-sm btn-outline-primary text-center mr-md-1" to={"/invoices/" + invoice.id}>
                                     <FontAwesomeIcon icon={faPencilAlt} />

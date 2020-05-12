@@ -122,7 +122,7 @@ const CustomersPage = (props) => {
                     <th className="text-warning">Email</th>
                     <th className="text-warning">Entreprise</th>
                     <th className="text-warning text-center">Factures</th>
-                    <th className="text-warning text-center">Montant total HT</th>
+                    <th className="text-warning text-center">Montant total perçu TTC</th>
                     <th className="text-warning text-center">Actions</th>
                 </tr>
                 </thead>

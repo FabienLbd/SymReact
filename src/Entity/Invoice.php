@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -21,7 +22,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  *     attributes={
  *          "pagination_enabled"=false,
  *          "pagination_items_per_page"=20,
- *          "order": {"status":"desc"}
+ *          "order": {"chrono":"desc"}
  *     },
  *     normalizationContext={
  *          "groups"={"invoices_read"}
@@ -95,6 +96,26 @@ class Invoice
      * @Assert\Type(type="numeric", message="Le montant des frais doit être numerique !")
      */
     private $fee;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     * @Groups({"invoices_read", "invoices_subresource"})
+     * @Assert\Type(type="numeric", message="Le montant doit être numerique !")
+     */
+    private $feeReminder = 0;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     * @Groups({"invoices_read", "invoices_subresource"})
+     * @Assert\Type(type="numeric", message="Le montant doit être numerique !")
+     */
+    private $amountReminder = 0;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"invoices_read", "invoices_subresource"})
+     */
+    private $isReminderInvoice = false;
 
     /**
      * @Groups({"invoices_read", "invoices_subresource"})
@@ -178,6 +199,75 @@ class Invoice
     public function setFee($fee): self
     {
         $this->fee = $fee;
+
+        return $this;
+    }
+
+    public function getFeeReminder(): ?float
+    {
+        return $this->feeReminder;
+    }
+
+    public function setFeeReminder(?float $feeReminder): self
+    {
+        $this->feeReminder = $feeReminder;
+
+        return $this;
+    }
+
+    public function getAmountReminder(): ?float
+    {
+        return $this->amountReminder;
+    }
+
+    public function setAmountReminder(?float $amountReminder): self
+    {
+        $this->amountReminder = $amountReminder;
+
+        return $this;
+    }
+
+    /**
+     * @Groups({"invoices_read", "invoices_subresource"})
+     * @SerializedName("total")
+     * @return float
+     */
+    public function getTotalAmountTTC(): float
+    {
+        $sum = $this->getAmount() + $this->getFee() + $this->getFeeReminder() + $this->getAmountReminder();
+        return round($sum + ($sum * 0.20), 2);
+    }
+
+    /**
+     * @Groups({"invoices_read"})
+     * @SerializedName("totalHT")
+     * @return float
+     */
+    public function getTotalAmountHT(): float
+    {
+        $sum = $this->getAmount() + $this->getFee() + $this->getFeeReminder() + $this->getAmountReminder();
+        return round($sum, 2);
+    }
+
+    /**
+     * @Groups({"invoices_read"})
+     * @SerializedName("tvaAmount")
+     * @return float
+     */
+    public function getTvaAmount(): float
+    {
+        $sum = $this->getAmount() + $this->getFee() + $this->getFeeReminder() + $this->getAmountReminder();
+        return round($sum * 0.20, 2);
+    }
+
+    public function getIsReminderInvoice(): ?bool
+    {
+        return $this->isReminderInvoice;
+    }
+
+    public function setIsReminderInvoice(?bool $isReminderInvoice): self
+    {
+        $this->isReminderInvoice = $isReminderInvoice;
 
         return $this;
     }

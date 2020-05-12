@@ -5,28 +5,30 @@ import {Link} from "react-router-dom";
 import customersAPI from "../services/customersAPI";
 import invoicesAPI from "../services/invoicesAPI";
 import { toast } from "react-toastify";
-import {faSave, faChevronLeft} from "@fortawesome/fontawesome-free-solid";
+import {faSave, faPlusCircle, faMinusCircle, faChevronLeft} from "@fortawesome/fontawesome-free-solid";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SpinnerLoader from "../components/loaders/SpinnerLoader";
 
-
 const InvoicePage = ({history, match}) => {
     const {id ="new"} = match.params;
-
     const [invoice, setInvoice] = useState({
         amount: "",
         fee: "",
         customer: "",
-        status: "SENT"
+        status: "SENT",
+        feeReminder: 0,
+        amountReminder: 0,
+        isReminderInvoice: ""
     });
-
+    const [isReminder, setIsReminder] = useState(false);
     const [customers, setCustomers] = useState([]);
-
     const [errors, setErrors] = useState({
         amount: "",
         fee: "",
         customer: "",
-        status: ""
+        status: "",
+        feeReminder: "",
+        amountReminder: ""
     });
 
     const [edit, setEdit] = useState(false);
@@ -50,8 +52,11 @@ const InvoicePage = ({history, match}) => {
     //Récuperation d'une facture en fonction de l'Id
     const fetchInvoice = async id => {
         try {
-            const { amount, status, customer, fee } = await invoicesAPI.findInvoice(id);
-            setInvoice({ amount, status, customer: customer.id, fee });
+            const { amount, status, customer, fee, amountReminder, feeReminder, isReminderInvoice } = await invoicesAPI.findInvoice(id);
+            setInvoice({ amount, status, customer: customer.id, fee, amountReminder, feeReminder, isReminderInvoice });
+            if (isReminderInvoice) {
+                setIsReminder(true);
+            }
             setLoading(false);
         } catch (error) {
             toast.error("Oh non! Impossible de charger la facture demandée !");
@@ -68,13 +73,16 @@ const InvoicePage = ({history, match}) => {
     useEffect(() => {
         if (id !== "new") {
             setEdit(true);
-            fetchInvoice(id)
+            fetchInvoice(id);
         }
     }, [id]);
 
     //Gestion du changement dans les inputs du formulaire
     const handleChange = ({currentTarget}) => {
-        const {value, name} = currentTarget;
+        let {value, name} = currentTarget;
+        if (value === "true" || value === "false") {
+            value = JSON.parse(value);
+        }
         setInvoice({...invoice, [name]: value})
     };
 
@@ -104,11 +112,45 @@ const InvoicePage = ({history, match}) => {
         }
     };
 
+    const handleReminder = ({currentTarget}) => {
+        const {name} = currentTarget;
+        if (isReminder) {
+            setIsReminder(false);
+            setInvoice({...invoice, [name]: false, feeReminder: 0, amountReminder: 0});
+        } else {
+            setIsReminder(true);
+            setInvoice({...invoice, [name]: true});
+        }
+    };
+
     return (
         <>
             <div className="w-75 mx-auto">
-                {!edit && <h1 className="mb-3">Création d'une facture</h1> ||
-                <h1 className="mb-3">Modification de la facture</h1>}
+                <div className="d-flex justify-content-between mb-4">
+                    {!edit &&
+                    <h1 className="my-0">Création d'une facture</h1>
+                    ||
+                    <h1 className="my-0">Modification de la facture</h1>}
+                    {!loading &&
+                        <button
+                            name="isReminderInvoice"
+                            value={invoice.isReminderInvoice}
+                            onClick={handleReminder}
+                            className="btn btn-sm btn-outline-primary">
+                            {!isReminder && !invoice.isReminderInvoice &&
+                                <div>
+                                    <FontAwesomeIcon icon={faPlusCircle}/>
+                                    Ajouter un rappel
+                                </div>
+                                ||
+                                <div>
+                                    <FontAwesomeIcon icon={faMinusCircle}/>
+                                    Enlever le rappel
+                                </div>
+                            }
+                        </button>
+                    }
+                </div>
                 { loading && <SpinnerLoader/> }
                 { !loading && (
                     <form onSubmit={handleSubmit}>
@@ -130,7 +172,7 @@ const InvoicePage = ({history, match}) => {
                                     isRequired={true}
                                     name="fee"
                                     type="number"
-                                    placeholder="Montant des charges"
+                                    placeholder="Entrer un montant"
                                     label="Montant des charges"
                                     onChange={handleChange}
                                     value={invoice.fee}
@@ -138,6 +180,32 @@ const InvoicePage = ({history, match}) => {
                                 />
                             </div>
                         </div>
+                        {invoice.isReminderInvoice  &&
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <Field
+                                        name="amountReminder"
+                                        type="number"
+                                        placeholder="Entrer un montant"
+                                        label="Montant du rappel de loyer"
+                                        onChange={handleChange}
+                                        value={invoice.amountReminder}
+                                        error={errors.amountReminder}
+                                    />
+                                </div>
+                                <div className="col-md-6">
+                                    <Field
+                                        name="feeReminder"
+                                        type="number"
+                                        placeholder="Entrer un montant"
+                                        label="Montant du rappel de charges"
+                                        onChange={handleChange}
+                                        value={invoice.feeReminder}
+                                        error={errors.feeReminder}
+                                    />
+                                </div>
+                            </div>
+                        }
                         <div className="row">
                             <div className="col-md-6">
                                 <Select
@@ -170,9 +238,8 @@ const InvoicePage = ({history, match}) => {
                         </div>
                         <div className="form-group d-flex justify-content-end">
                             <Link
-                                to={edit ? "/customers/" + invoice.customer + "/invoices/"
-                                    : "/invoices/"}
-                                className="btn btn-link">
+                                to="/invoices/"
+                                className="btn btn-link mr-3">
                                 <FontAwesomeIcon icon={faChevronLeft} />
                                 Retour à la liste</Link>
                             <button type="submit" className="btn btn-outline-success">
@@ -183,7 +250,6 @@ const InvoicePage = ({history, match}) => {
                     </form>
                 )}
             </div>
-
         </>
     );
 };

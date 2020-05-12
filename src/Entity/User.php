@@ -326,8 +326,6 @@ class User implements UserInterface
         $this->plainPassword = $plainPassword;
     }
 
-
-
     /**
      * @see UserInterface
      */
@@ -347,7 +345,7 @@ class User implements UserInterface
 
     public function getFirstname(): ?string
     {
-        return $this->firstname;
+        return ucfirst($this->firstname);
     }
 
     public function setFirstname(string $firstname): self
@@ -359,7 +357,7 @@ class User implements UserInterface
 
     public function getLastname(): ?string
     {
-        return $this->lastname;
+        return ucfirst($this->lastname);
     }
 
     public function setLastname(string $lastname): self
@@ -438,7 +436,7 @@ class User implements UserInterface
 
     public function getCompany(): ?string
     {
-        return $this->company;
+        return ucfirst($this->company);
     }
 
     public function setCompany(string $company): self
@@ -450,7 +448,7 @@ class User implements UserInterface
 
     public function getCity(): ?string
     {
-        return $this->city;
+        return ucfirst($this->city);
     }
 
     public function setCity(string $city): self
