@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/api-course.iml" filepath="$PROJECT_DIR$/.idea/api-course.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/SymReact.iml" filepath="$PROJECT_DIR$/.idea/SymReact.iml" />
     </modules>
   </component>
 </project>
