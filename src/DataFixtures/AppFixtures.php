@@ -1,7 +1,7 @@
 <?php
 
-//class AppFixtures extends Fixture
-//{
+// class AppFixtures extends Fixture
+// {
 //    /**
 //     * @var UserPasswordEncoderInterface
 //     */
@@ -83,7 +83,7 @@
 //
 //        $manager->flush();
 //    }
-//}
+// }
 
 namespace App\DataFixtures;
 

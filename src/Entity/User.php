@@ -2,233 +2,164 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\UserResetPasswordAction;
+use App\Repository\UserRepository;
+use App\State\UserProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
-use App\Controller\UserResetPasswordAction;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ApiResource(
- *     collectionOperations={
- *         "get"={
- *              "access_control"="is_granted('ROLE_ADMIN')"
- *          },
- *         "post"={
- *              "validation_groups"={"Default", "user_write"},
- *              "denormalization_context"={"groups"={"user_write"}}
- *         },
- *          "reset_password_request"={
- *              "method"="POST",
- *              "path"="/users/resetPasswordRequest",
- *              "denormalization_context"={"groups"={"reset_password_request"}},
- *              "validation_groups"={"reset_password_request"}
- *          }
- *     },
- *     itemOperations={
- *          "get"={
- *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and object == user)",
- *              "normalization_context"={"groups"={"users_read"}}
- *          },
- *          "put"={
- *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and object == user)",
- *              "denormalization_context"={"groups"={"users_put"}}
- *          },
- *          "delete"={
- *             "access_control"="is_granted('ROLE_ADMIN')"
- *          },
- *          "update_password"={
- *              "method"="PUT",
- *              "path"="/users/{id}/updatePassword",
- *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and object == user)",
- *              "denormalization_context"={"groups"={"update_password"}},
- *              "validation_groups"={"update_password"}
- *          },
- *          "reset_password"={
- *              "method"="PUT",
- *              "path"="/users/{token}/resetPassword",
- *              "denormalization_context"={"groups"={"reset_password"}},
- *              "validation_groups"={"reset_password"},
- *              "controller"=UserResetPasswordAction::class,
- *              "defaults"={"identifiedBy"="token"},
- *               "read"=false
- *          }
- *     },
- * )
- * @UniqueEntity("email", message="Un utilisateur ayant cette adresse email existe déjà")
- */
-class User implements UserInterface
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['users_read']],
+            security: '(is_granted(\'ROLE_ADMIN\') or is_granted(\'ROLE_USER\') and object == user)'
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['users_put']],
+            security: '(is_granted(\'ROLE_ADMIN\') or is_granted(\'ROLE_USER\') and object == user)'
+        ),
+        new Delete(security: 'is_granted(\'ROLE_ADMIN\')'),
+        new Put(
+            uriTemplate: '/users/{id}/updatePassword',
+            denormalizationContext: ['groups' => ['update_password']],
+            security: '(is_granted(\'ROLE_ADMIN\') or is_granted(\'ROLE_USER\') and object == user)', validationContext: ['groups' => ['update_password']]
+        ),
+        new Put(
+            uriTemplate: '/users/{token}/resetPassword',
+            defaults: ['identifiedBy' => 'token'],
+            controller: UserResetPasswordAction::class,
+            denormalizationContext: ['groups' => ['reset_password']],
+            validationContext: ['groups' => ['reset_password']], read: false
+        ),
+        new GetCollection(security: 'is_granted(\'ROLE_ADMIN\')'),
+        new Post(
+            denormalizationContext: ['groups' => ['user_write']],
+            validationContext: ['groups' => ['Default', 'user_write']]
+        ),
+        new Post(
+            uriTemplate: '/users/resetPasswordRequest',
+            denormalizationContext: ['groups' => ['reset_password_request']],
+            validationContext: ['groups' => ['reset_password_request']]),
+    ],
+    processor: UserProcessor::class
+)
+]
+#[UniqueEntity('email', message: 'Un utilisateur ayant cette adresse email existe déjà')]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    const ROLE_ADMIN = 'ROLE_ADMIN';
-    const ROLE_USER = 'ROLE_USER';
-    const DEFAULT_ROLE = 'ROLE_USER';
+    final public const ROLE_ADMIN = 'ROLE_ADMIN';
+    final public const ROLE_USER = 'ROLE_USER';
+    final public const DEFAULT_ROLE = 'ROLE_USER';
+
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource', 'users_read'])]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
+
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource', 'users_read', 'user_write', 'reset_password_request'])]
+    #[Assert\NotBlank(message: "L'email doit être renseigné", groups: ['reset_password_request'])]
+    #[Assert\Email(message: "L'adresse email doit avoir un format valide", groups: ['reset_password_request'])]
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
+
+    #[Groups(['update_password', 'user_write', 'reset_password'])]
+    #[SerializedName('password')]
+    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire', groups: ['user_write', 'update_password', 'reset_password'])]
+    private ?string $plainPassword = null;
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
-     */
-    private $id;
-
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups(
-     *     {
-     *     "customers_read",
-     *     "invoices_read",
-     *     "invoices_subresource",
-     *     "users_read",
-     *     "user_write",
-     *     "reset_password_request"
-     *     }
-     *)
-     * @Assert\NotBlank(
-     *     message="L'email doit être renseigné",
-     *     groups={"reset_password_request"}
-     * )
-     * @Assert\Email(
-     *     message="L'adresse email doit avoir un format valide",
-     *     groups={"reset_password_request"}
-     * )
-     */
-    private $email;
-
-    /**
-     * @ORM\Column(type="json")
-     */
-    private $roles = [];
-
-    /**
-     * @Groups({"update_password", "user_write", "reset_password"})
-     * @SerializedName("password")
-     * @Assert\NotBlank(
-     *     message="Le mot de passe est obligatoire",
-     *     groups={"user_write", "update_password", "reset_password"}
-     *     )
-     */
-    private $plainPassword;
-
-    /**
-     * @Groups({"update_password"})
-     * @Assert\NotBlank(
-     *     message="Le mot de passe est obligatoire",
-     *     groups={"update_password"}
-     *     )
      * @SecurityAssert\UserPassword(
      *     groups={"update_password"},
      *     message = "Le mot de passe donné ne correspond pas !"
      * )
      */
-    private $oldPassword;
+    #[Groups(['update_password'])]
+    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire', groups: ['update_password'])]
+    private ?string $oldPassword = null;
 
     /**
      * @var string The hashed password
-     * @ORM\Column(type="string")
      */
-    private $password;
+    #[ORM\Column(type: 'string')]
+    private ?string $password = null;
 
     /**
      * @var string The hashed confirmed password
-     * @Groups({"update_password", "user_write", "reset_password"})
-     * @Assert\IdenticalTo(
-     *     propertyPath="plainPassword",
-     *     message="La confirmation du mot de passe n'est pas valide",
-     *     groups={"user_write", "update_password", "reset_password"}
-     *     )
      */
-    private $passwordConfirm;
+    #[Groups(['update_password', 'user_write', 'reset_password'])]
+    #[Assert\IdenticalTo(propertyPath: 'plainPassword', message: "La confirmation du mot de passe n'est pas valide", groups: ['user_write', 'update_password', 'reset_password'])]
+    private ?string $passwordConfirm = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put", "user_write"})
-     * @Assert\NotBlank(
-     *     message="Le prénom est obligatoire",
-     * )
-     * @Assert\Length(
-     *      min=3,
-     *      minMessage="Le prénom doit faire entre 3 et 255 caractères",
-     *      max=255, maxMessage="Le prénom doit faire entre 3 et 255 caractères"
-     * )
-     */
-    private $firstname;
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource', 'users_read', 'users_put', 'user_write'])]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire')]
+    #[Assert\Length(min: 3, minMessage: 'Le prénom doit faire entre 3 et 255 caractères', max: 255, maxMessage: 'Le prénom doit faire entre 3 et 255 caractères')]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $firstname = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put", "user_write"})
-     * @Assert\NotBlank(message="Le nom de famille est obligatoire")
-     * @Assert\Length(
-     *      min=3,
-     *      minMessage="Le nom de famille doit faire entre 3 et 255 caractères",
-     *      max=255, maxMessage="Le nom de famille doit faire entre 3 et 255 caractères"
-     * )
-     */
-    private $lastname;
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource', 'users_read', 'users_put', 'user_write'])]
+    #[Assert\NotBlank(message: 'Le nom de famille est obligatoire')]
+    #[Assert\Length(min: 3, minMessage: 'Le nom de famille doit faire entre 3 et 255 caractères', max: 255, maxMessage: 'Le nom de famille doit faire entre 3 et 255 caractères')]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $lastname = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Customer", mappedBy="user")
-     */
-    private $customers;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Customer::class)]
+    private Collection $customers;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put", "user_write"})
-     * @Assert\NotBlank(message="L'adresse est obligatoire")
-     */
-    private $address;
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource', 'users_read', 'users_put', 'user_write'])]
+    #[Assert\NotBlank(message: "L'adresse est obligatoire")]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $address = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put", "user_write"})
-     * @Assert\NotBlank(message="Le code postal est obligatoire")
-     */
-    private $postalCode;
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource', 'users_read', 'users_put', 'user_write'])]
+    #[Assert\NotBlank(message: 'Le code postal est obligatoire')]
+    #[ORM\Column(type: 'string')]
+    private ?string $postalCode = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put", "user_write"})
-     * @Assert\NotBlank(message="Le numéro de TVA est obligatoire")
-     */
-    private $numTVA;
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource', 'users_read', 'users_put', 'user_write'])]
+    #[Assert\NotBlank(message: 'Le numéro de TVA est obligatoire')]
+    #[ORM\Column(type: 'string')]
+    private ?string $numTVA = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put", "user_write"})
-     * @Assert\NotBlank(message="Le nom de la société est obligatoire")
-     */
-    private $company;
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource', 'users_read', 'users_put', 'user_write'])]
+    #[Assert\NotBlank(message: 'Le nom de la société est obligatoire')]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $company = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put", "user_write"})
-     * @Assert\NotBlank(message="Le nom de la ville est obligatoire")
-     */
-    private $city;
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource', 'users_read', 'users_put', 'user_write'])]
+    #[Assert\NotBlank(message: 'Le nom de la ville est obligatoire')]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $city = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read", "users_put", "user_write"})
-     * @Assert\NotBlank(message="Le numéro de téléphone est obligatoire")
-     */
-    private $phone;
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource', 'users_read', 'users_put', 'user_write'])]
+    #[Assert\NotBlank(message: 'Le numéro de téléphone est obligatoire')]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $phone = null;
 
-    /**
-     * @ORM\Column(type="string", length=40, nullable=true)
-     * @Groups({"reset_password"})
-     */
-    private $resetPasswordToken;
+    #[Groups(['reset_password'])]
+    #[ORM\Column(type: 'string', length: 40, nullable: true)]
+    private ?string $resetPasswordToken = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $resetPasswordGeneratedAt;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $resetPasswordGeneratedAt = null;
 
     public function __construct()
     {
@@ -241,12 +172,22 @@ class User implements UserInterface
         return $this->id;
     }
 
+    /**
+     * The public representation of the user (e.g. a username, an email address, etc.).
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
@@ -276,21 +217,16 @@ class User implements UserInterface
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPasswordConfirm(): ?string
     {
         return $this->passwordConfirm;
     }
 
-    /**
-     * @param string $passwordConfirm
-     */
-    public function setPasswordConfirm(string $passwordConfirm): void
+    public function setPasswordConfirm(?string $passwordConfirm): void
     {
         $this->passwordConfirm = $passwordConfirm;
     }
@@ -303,25 +239,19 @@ class User implements UserInterface
         return (string) $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
         $this->password = $password;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPlainPassword()
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    /**
-     * @param mixed $plainPassword
-     */
-    public function setPlainPassword($plainPassword): void
+    public function setPlainPassword(?string $plainPassword): void
     {
         $this->plainPassword = $plainPassword;
     }
@@ -329,15 +259,15 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt(): ?string
     {
-        // not needed when using the "bcrypt" algorithm in security.yaml
+        return null;
     }
 
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         $this->plainPassword = null;
@@ -345,10 +275,10 @@ class User implements UserInterface
 
     public function getFirstname(): ?string
     {
-        return ucfirst($this->firstname);
+        return ucfirst((string) $this->firstname);
     }
 
-    public function setFirstname(string $firstname): self
+    public function setFirstname(?string $firstname): self
     {
         $this->firstname = $firstname;
 
@@ -357,19 +287,16 @@ class User implements UserInterface
 
     public function getLastname(): ?string
     {
-        return ucfirst($this->lastname);
+        return ucfirst((string) $this->lastname);
     }
 
-    public function setLastname(string $lastname): self
+    public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
 
         return $this;
     }
 
-    /**
-     * @return Collection|Customer[]
-     */
     public function getCustomers(): Collection
     {
         return $this->customers;
@@ -403,7 +330,7 @@ class User implements UserInterface
         return $this->address;
     }
 
-    public function setAddress(string $address): self
+    public function setAddress(?string $address): self
     {
         $this->address = $address;
 
@@ -415,7 +342,7 @@ class User implements UserInterface
         return $this->postalCode;
     }
 
-    public function setPostalCode(string $postalCode): self
+    public function setPostalCode(?string $postalCode): self
     {
         $this->postalCode = $postalCode;
 
@@ -427,7 +354,7 @@ class User implements UserInterface
         return $this->numTVA;
     }
 
-    public function setNumTVA(string $numTVA): self
+    public function setNumTVA(?string $numTVA): self
     {
         $this->numTVA = $numTVA;
 
@@ -436,10 +363,10 @@ class User implements UserInterface
 
     public function getCompany(): ?string
     {
-        return ucfirst($this->company);
+        return ucfirst((string) $this->company);
     }
 
-    public function setCompany(string $company): self
+    public function setCompany(?string $company): self
     {
         $this->company = $company;
 
@@ -448,10 +375,10 @@ class User implements UserInterface
 
     public function getCity(): ?string
     {
-        return ucfirst($this->city);
+        return ucfirst((string) $this->city);
     }
 
-    public function setCity(string $city): self
+    public function setCity(?string $city): self
     {
         $this->city = $city;
 
@@ -463,25 +390,19 @@ class User implements UserInterface
         return $this->phone;
     }
 
-    public function setPhone(string $phone): self
+    public function setPhone(?string $phone): self
     {
         $this->phone = $phone;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getOldPassword()
+    public function getOldPassword(): ?string
     {
         return $this->oldPassword;
     }
 
-    /**
-     * @param mixed $oldPassword
-     */
-    public function setOldPassword($oldPassword): void
+    public function setOldPassword(?string $oldPassword): void
     {
         $this->oldPassword = $oldPassword;
     }

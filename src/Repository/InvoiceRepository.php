@@ -3,9 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Invoice;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @method Invoice|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,7 +20,7 @@ class InvoiceRepository extends ServiceEntityRepository
         parent::__construct($registry, Invoice::class);
     }
 
-    public function findNextChrono(User $user)
+    public function findNextChrono(UserInterface $user): int|float
     {
         try {
             return $this->createQueryBuilder('i')
@@ -32,9 +32,8 @@ class InvoiceRepository extends ServiceEntityRepository
                     ->setMaxResults(1)
                     ->getQuery()
                     ->getSingleScalarResult() + 1;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return 1;
         }
     }
 }
-
