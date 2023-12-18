@@ -1,10 +1,6 @@
-<<<<<<< ours
 require("dotenv").config();
 
-var Encore = require('@symfony/webpack-encore');
-=======
 const Encore = require('@symfony/webpack-encore');
->>>>>>> theirs
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -51,12 +47,7 @@ Encore
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
 
-<<<<<<< ours
-    // enables @babel/preset-env polyfills
-    .configureBabelPresetEnv((config) => {
-        config.useBuiltIns = 'usage';
-        config.corejs = 3;
-=======
+
     // configure Babel
     // .configureBabel((config) => {
     //     config.plugins.push('@babel/a-babel-plugin');
@@ -66,7 +57,6 @@ Encore
     .configureBabelPresetEnv((config) => {
         config.useBuiltIns = 'usage';
         config.corejs = '3.23';
->>>>>>> theirs
     })
 
     // enables Sass/SCSS support
@@ -84,7 +74,6 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
-<<<<<<< ours
 
     // uncomment if you use API Platform Admin (composer req api-admin)
     .enableReactPreset()
@@ -93,8 +82,5 @@ Encore
 Encore.configureDefinePlugin(options => {
     options["process.env"].API_URL = process.env.API_URL;
 });
-=======
-;
->>>>>>> theirs
 
 module.exports = Encore.getWebpackConfig();
