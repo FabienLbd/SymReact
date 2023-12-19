@@ -2,172 +2,118 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Repository\CustomerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiFilter;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
- * @ApiResource(
- *     attributes={
- *        "order"={
- *          "lastname":"ASC"
- *        }
- *     },
- *     collectionOperations={"GET", "POST"},
- *     itemOperations={"GET", "PUT", "DELETE"},
- *     subresourceOperations={
- *          "invoices_get_subresource"={"path"="/customers/{id}/invoices"}
- *     },
- *     normalizationContext={
- *          "groups"={"customers_read"}
- *     }
- * )
- * @ApiFilter(BooleanFilter::class, properties={"isArchived"})
- *
- */
+#[ApiResource(
+    operations: [
+        new Get(),
+        new Put(),
+        new Delete(),
+        new GetCollection(),
+        new Post(),
+    ],
+    normalizationContext: ['groups' => ['customers_read']],
+    order: ['lastname' => 'ASC']
+)]
+#[ApiFilter(filterClass: BooleanFilter::class, properties: ['isArchived'])]
+#[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
 {
     /**
      * Hook timestampable behavior
-     * updates createdAt, updatedAt fields
+     * updates createdAt, updatedAt fields.
      */
     use TimestampableEntity;
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource"})
-     */
-    private $id;
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource'])]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read"})
-     * @Assert\NotBlank(message="Le prénom du customer est obligatoire")
-     * @Assert\Length(
-     *      min=3,
-     *      minMessage="Le prénom doit faire entre 3 et 255 caractères",
-     *      max=255, maxMessage="Le prénom doit faire entre 3 et 255 caractères"
-     * )
-     */
-    private $firstname;
+    #[Groups(['customers_read', 'invoices_read'])]
+    #[Assert\NotBlank(message: 'Le prénom du customer est obligatoire')]
+    #[Assert\Length(min: 3, minMessage: 'Le prénom doit faire entre 3 et 255 caractères', max: 255, maxMessage: 'Le prénom doit faire entre 3 et 255 caractères')]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $firstname = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource"})
-     * @Assert\NotBlank(message="Le nom de famille du customer est obligatoire")
-     * @Assert\Length(
-     *      min=3,
-     *      minMessage="Le nom de famille doit faire entre 3 et 255 caractères",
-     *      max=255, maxMessage="Le prénom doit faire entre 3 et 255 caractères"
-     * )
-     */
-    private $lastname;
+    #[Groups(['customers_read', 'invoices_read', 'invoices_subresource'])]
+    #[Assert\NotBlank(message: 'Le nom de famille du customer est obligatoire')]
+    #[Assert\Length(min: 3, minMessage: 'Le nom de famille doit faire entre 3 et 255 caractères', max: 255, maxMessage: 'Le prénom doit faire entre 3 et 255 caractères')]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $lastname = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read"})
-     * @Assert\NotBlank(message="L'adresse email du customer est obligatoire")
-     * @Assert\Email(message="Le format de l'adresse email doit être valide")
-     *
-     */
-    private $email;
+    #[Groups(['customers_read', 'invoices_read'])]
+    #[Assert\NotBlank(message: "L'adresse email du customer est obligatoire")]
+    #[Assert\Email(message: "Le format de l'adresse email doit être valide")]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $email = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"customers_read", "invoices_read"})
-     */
-    private $company;
+    #[Groups(['customers_read', 'invoices_read'])]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $company = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="customer")
-     * @Groups({"customers_read"})
-     * @ApiSubresource
-     */
-    private $invoices;
+    #[Groups(['customers_read'])]
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Invoice::class)]
+    private ArrayCollection $invoices;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="customers")
-     * @Groups({"customers_read", "invoices_read"})
-     * @Assert\NotBlank(message="L'utilisateur est obligatoire")
-     */
-    private $user;
+    #[Groups(['customers_read', 'invoices_read'])]
+    #[Assert\NotBlank(message: "L'utilisateur est obligatoire")]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'customers')]
+    private ?User $user = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read"})
-     * @Assert\NotBlank(message="L'adresse est obligatoire")
-     * @Assert\Length(
-     *      min=3,
-     *      minMessage="L'adresse doit faire entre 3 et 255 caractères",
-     *      max=255,
-     *      maxMessage="L'adresse' doit faire entre 3 et 255 caractères"
-     * )
-     */
-    private $address;
+    #[Groups(['customers_read', 'invoices_read'])]
+    #[Assert\NotBlank(message: "L'adresse est obligatoire")]
+    #[Assert\Length(min: 3, minMessage: "L'adresse doit faire entre 3 et 255 caractères", max: 255, maxMessage: "L'adresse' doit faire entre 3 et 255 caractères")]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $address = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @Groups({"customers_read", "invoices_read"})
-     * @Assert\NotBlank(message="Le code postal est obligatoire")
-     */
-    private $postalCode;
+    #[Groups(['customers_read', 'invoices_read'])]
+    #[Assert\NotBlank(message: 'Le code postal est obligatoire')]
+    #[ORM\Column(type: 'string')]
+    private ?string $postalCode = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read"})
-     * @Assert\NotBlank(message="La ville est obligatoire")
-     * @Assert\Length(
-     *      min=3,
-     *      minMessage="Le nom de la ville doit faire entre 3 et 255 caractères",
-     *      max=255,
-     *      maxMessage="Le nom de la ville doit faire entre 3 et 255 caractères"
-     * )
-     */
-    private $city;
+    #[Groups(['customers_read', 'invoices_read'])]
+    #[Assert\NotBlank(message: 'La ville est obligatoire')]
+    #[Assert\Length(min: 3, minMessage: 'Le nom de la ville doit faire entre 3 et 255 caractères', max: 255, maxMessage: 'Le nom de la ville doit faire entre 3 et 255 caractères')]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $city = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"customers_read"})
-     */
-    private $isArchived = false;
+    #[Groups(['customers_read'])]
+    #[ORM\Column(type: 'boolean')]
+    private bool $isArchived = false;
 
     public function __construct()
     {
         $this->invoices = new ArrayCollection();
     }
 
-    /**
-     * @Groups({"customers_read"})
-     * @SerializedName("totalAmount")
-     * @return float
-     */
+    #[Groups(['customers_read'])]
+    #[SerializedName('totalAmount')]
     public function getTotalAmount(): float
     {
-        return array_reduce($this->invoices->toarray(), function($total, $invoice) {
-            return $total + ($invoice->getStatus() === "PAID" ? $invoice->getTotalAmountTTC() : 0);
-        }, 0);
+        return array_reduce($this->invoices->toarray(), static fn ($total, $invoice): int|float => $total + ('PAID' === $invoice->getStatus() ? $invoice->getTotalAmountTTC() : 0), 0);
     }
 
-    /**
-     * @Groups({"customers_read"})
-     * @return float
-     */
+    #[Groups(['customers_read'])]
     public function getUnpaidAmount(): float
     {
-        return array_reduce($this->invoices->toArray(), function($total, $invoice) {
-            return $total + ($invoice->getStatus() === "PAID" || $invoice->getstatus() === "CANCELLED" ? 0 : $invoice->getAmount());
-        }, 0);
+        return array_reduce($this->invoices->toArray(), static fn ($total, $invoice): int|float => $total + ('PAID' === $invoice->getStatus() || 'CANCELLED' === $invoice->getstatus() ? 0 : $invoice->getAmount()), 0);
     }
 
     public function getId(): ?int
@@ -177,10 +123,10 @@ class Customer
 
     public function getFirstname(): ?string
     {
-        return ucfirst($this->firstname);
+        return ucfirst((string) $this->firstname);
     }
 
-    public function setFirstname(string $firstname): self
+    public function setFirstname(?string $firstname): self
     {
         $this->firstname = $firstname;
 
@@ -189,10 +135,10 @@ class Customer
 
     public function getLastname(): ?string
     {
-        return ucfirst($this->lastname);
+        return ucfirst((string) $this->lastname);
     }
 
-    public function setLastname(string $lastname): self
+    public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
 
@@ -204,7 +150,7 @@ class Customer
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
@@ -213,7 +159,7 @@ class Customer
 
     public function getCompany(): ?string
     {
-        return ucfirst($this->company);
+        return ucfirst((string) $this->company);
     }
 
     public function setCompany(?string $company): self
@@ -223,9 +169,6 @@ class Customer
         return $this;
     }
 
-    /**
-     * @return Collection|Invoice[]
-     */
     public function getInvoices(): Collection
     {
         return $this->invoices;
@@ -271,7 +214,7 @@ class Customer
         return $this->address;
     }
 
-    public function setAddress(string $address): self
+    public function setAddress(?string $address): self
     {
         $this->address = $address;
 
@@ -283,7 +226,7 @@ class Customer
         return $this->postalCode;
     }
 
-    public function setPostalCode(string $postalCode): self
+    public function setPostalCode(?string $postalCode): self
     {
         $this->postalCode = $postalCode;
 
@@ -292,10 +235,10 @@ class Customer
 
     public function getCity(): ?string
     {
-        return ucfirst($this->city);
+        return ucfirst((string) $this->city);
     }
 
-    public function setCity(string $city): self
+    public function setCity(?string $city): self
     {
         $this->city = $city;
 

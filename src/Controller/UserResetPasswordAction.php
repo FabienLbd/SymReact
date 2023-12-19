@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Controller;
 
 use App\Entity\User;
@@ -10,18 +9,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserResetPasswordAction
 {
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-    /**
-     * @var Request
-     */
-    private $request;
-
-    public function __construct(UserRepository $userRepository)
+    public function __construct(private readonly UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
     }
 
     public function __invoke(User $data, Request $request)
@@ -30,18 +19,14 @@ class UserResetPasswordAction
 
         $user = $this->userRepository->findOneBy(['resetPasswordToken' => $token]);
         if (!$user) {
-            throw new NotFoundHttpException(
-                'L\'utilisateur n\'a pas été trouvé.'
-            );
+            throw new NotFoundHttpException('L\'utilisateur n\'a pas été trouvé.');
         }
 
         $now = new \DateTime();
         $resetPasswordGeneratedAt = $user->getResetPasswordGeneratedAt();
 
         if ($resetPasswordGeneratedAt->getTimestamp() + 900 < $now->getTimestamp()) {
-            throw new NotFoundHttpException(
-                'Le lien de réinitialisation du mot de passe a expiré, veuillez en redemander un nouveau.'
-            );
+            throw new NotFoundHttpException('Le lien de réinitialisation du mot de passe a expiré, veuillez en redemander un nouveau.');
         }
 
         $newPassword = $data->getPlainPassword();

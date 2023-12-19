@@ -1,11 +1,8 @@
 <?php
 
-
 namespace App\Events;
 
-
 use ApiPlatform\Core\EventListener\EventPriorities;
-use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Security\TokenGenerator;
 use App\Services\Mailer;
@@ -20,51 +17,18 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class UserResetPasswordRequestSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-    /**
-     * @var TokenGenerator
-     */
-    private $tokenGenerator;
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-    /**
-     * @var Mailer
-     */
-    private $mailer;
-
-    /**
-     * @var ParameterBagInterface
-     */
-    private $parameterBag;
-
-    public function __construct(
-        UserRepository $userRepository, 
-        TokenGenerator $tokenGenerator, 
-        EntityManagerInterface $em,
-        Mailer $mailer,
-        ParameterBagInterface $parameterBag
-    )
+    public function __construct(private readonly UserRepository $userRepository, private readonly TokenGenerator $tokenGenerator, private readonly EntityManagerInterface $em, private readonly Mailer $mailer, private readonly ParameterBagInterface $parameterBag)
     {
-        $this->userRepository = $userRepository;
-        $this->tokenGenerator = $tokenGenerator;
-        $this->em = $em;
-        $this->mailer = $mailer;
-        $this->parameterBag = $parameterBag;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::VIEW => ['confirmUser', EventPriorities::POST_VALIDATE]
+            KernelEvents::VIEW => ['confirmUser', EventPriorities::POST_VALIDATE],
         ];
     }
 
-    public function confirmUser(ViewEvent $event)
+    public function confirmUser(ViewEvent $event): void
     {
         $request = $event->getRequest();
 

@@ -1,14 +1,21 @@
 api_platform:
+    metadata_backward_compatibility_layer: false
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
-    collection:
-        pagination:
-            enabled: false
-            items_per_page: 5
-            client_enabled: true
-            client_items_per_page: true
-            items_per_page_parameter_name: "count"
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
+    defaults:
+        pagination_enabled: true
+#    collection:
+#        pagination:
+#            enabled: false
+#            items_per_page: 5
+#            client_enabled: true
+#            client_items_per_page: true
+#            items_per_page_parameter_name: "count"

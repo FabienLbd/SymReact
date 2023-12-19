@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Events;
-
 
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\Customer;
@@ -13,29 +11,23 @@ use Symfony\Component\Security\Core\Security;
 
 class CustomerUserSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var Security
-     */
-    private $security;
-
-    public function __construct(Security $security)
+    public function __construct(private readonly Security $security)
     {
-        $this->security = $security;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::VIEW => ['setUserForCustomer', EventPriorities::PRE_VALIDATE]
+            KernelEvents::VIEW => ['setUserForCustomer', EventPriorities::PRE_VALIDATE],
         ];
     }
 
-    public function setUserForCustomer(ViewEvent $event)
+    public function setUserForCustomer(ViewEvent $event): void
     {
         $result = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
 
-        if ($result instanceof Customer && $method === 'POST') {
+        if ($result instanceof Customer && 'POST' === $method) {
             $user = $this->security->getUser();
             $result->setUser($user);
         }

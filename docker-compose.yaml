@@ -10,4 +10,10 @@ services:
             # For example, to allow the host to connect to port 3306 on the container, you would change
             # "3306" to "3306:3306". Where the first port is exposed to the host and the second is the container port.
             # See https://docs.docker.com/compose/compose-file/compose-file-v3/#ports for more information.
-            - '3306'
+            - '3306:3306'
+    # Use localhost:1080 to get the emails
+    mailcatcher:
+        image: yappabe/mailcatcher
+        ports:
+            - "127.0.0.1:1025:1025"
+            - "127.0.0.1:1080:1080"

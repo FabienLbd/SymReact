@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Security;
-
 
 class TokenGenerator
 {
@@ -13,8 +11,8 @@ class TokenGenerator
         $token = '';
         $maxNumber = strlen(self::ALPHABET);
 
-        for ($i = 0; $i < $length; $i++) {
-            $token .= self::ALPHABET[random_int(0, $maxNumber -1)];
+        for ($i = 0; $i < $length; ++$i) {
+            $token .= self::ALPHABET[random_int(0, $maxNumber - 1)];
         }
 
         return $token;

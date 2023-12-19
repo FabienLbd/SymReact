@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services;
 
 use Symfony\Component\Mailer\Exception\TransportException;
@@ -11,18 +10,11 @@ use Twig\Environment;
 
 class Mailer
 {
-    protected $mailer;
-
-    private $templating;
-
-    public function __construct(MailerInterface $mailer, Environment $templating
-    )
-    {
-        $this->mailer = $mailer;
-        $this->templating = $templating;
+    public function __construct(private readonly MailerInterface $mailer, private readonly Environment $templating
+    ) {
     }
 
-    public function sendResetPasswordRequestEmail($from, $to, $user, $subject, $view)
+    public function sendResetPasswordRequestEmail(string $from, string $to, string $user, string $subject, string $view): void
     {
         $email = new Email();
         $email
@@ -33,7 +25,7 @@ class Mailer
 
         try {
             $this->mailer->send($email);
-        } catch (TransportExceptionInterface $e) {
+        } catch (TransportExceptionInterface) {
             throw new TransportException('Une erreur est survenue');
         }
     }
