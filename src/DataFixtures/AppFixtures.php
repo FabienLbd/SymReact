@@ -87,6 +87,10 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\User;
+use App\Factory\CustomerFactory;
+use App\Factory\InvoiceFactory;
+use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -94,9 +98,23 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // $product = new Product();
-        // $manager->persist($product);
+        UserFactory::createOne([
+            'email' => 'fabien.labedade@gmail.com',
+            'roles' => [User::ROLE_ADMIN],
+        ]);
 
-        $manager->flush();
+        UserFactory::createMany(10);
+
+        CustomerFactory::createMany(50, static function () {
+            return [
+                'user' => UserFactory::random(),
+            ];
+        });
+
+        InvoiceFactory::createMany(100, static function () {
+            return [
+                'customer' => CustomerFactory::random(),
+            ];
+        });
     }
 }

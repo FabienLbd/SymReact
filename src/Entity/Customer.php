@@ -70,7 +70,7 @@ class Customer
 
     #[Groups(['customers_read'])]
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Invoice::class)]
-    private ArrayCollection $invoices;
+    private Collection $invoices;
 
     #[Groups(['customers_read', 'invoices_read'])]
     #[Assert\NotBlank(message: "L'utilisateur est obligatoire")]

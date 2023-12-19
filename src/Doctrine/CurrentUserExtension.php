@@ -35,10 +35,16 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface, Q
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
+        /** @var User $user */
         $user = $this->security->getUser();
+
+        if (!$user) {
+            return;
+        }
+
         $allowedClasses = [Customer::class, Invoice::class];
 
-        if (in_array($resourceClass, $allowedClasses) && !$this->auth->isGranted(User::ROLE_ADMIN) && $user instanceof User) {
+        if (in_array($resourceClass, $allowedClasses) && !$this->auth->isGranted(User::ROLE_ADMIN)) {
             switch ($resourceClass) {
                 case Customer::class:
                     $this->addCustomerWhere($queryBuilder);

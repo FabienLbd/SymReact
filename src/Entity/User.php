@@ -64,7 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     final public const ROLE_ADMIN = 'ROLE_ADMIN';
     final public const ROLE_USER = 'ROLE_USER';
-    final public const DEFAULT_ROLE = 'ROLE_USER';
+    final public const DEFAULT_ROLE = self::ROLE_USER;
 
     #[Groups(['customers_read', 'invoices_read', 'invoices_subresource', 'users_read'])]
     #[ORM\Id]
@@ -86,25 +86,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: 'Le mot de passe est obligatoire', groups: ['user_write', 'update_password', 'reset_password'])]
     private ?string $plainPassword = null;
 
-    /**
-     * @SecurityAssert\UserPassword(
-     *     groups={"update_password"},
-     *     message = "Le mot de passe donné ne correspond pas !"
-     * )
-     */
+    #[SecurityAssert\UserPassword(message: 'Le mot de passe donné ne correspond pas !', groups: ['update_password'])]
     #[Groups(['update_password'])]
     #[Assert\NotBlank(message: 'Le mot de passe est obligatoire', groups: ['update_password'])]
     private ?string $oldPassword = null;
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column(type: 'string')]
     private ?string $password = null;
 
-    /**
-     * @var string The hashed confirmed password
-     */
     #[Groups(['update_password', 'user_write', 'reset_password'])]
     #[Assert\IdenticalTo(propertyPath: 'plainPassword', message: "La confirmation du mot de passe n'est pas valide", groups: ['user_write', 'update_password', 'reset_password'])]
     private ?string $passwordConfirm = null;
