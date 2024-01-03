@@ -13,7 +13,7 @@ class UserResetPasswordAction
     {
     }
 
-    public function __invoke(User $data, Request $request)
+    public function __invoke(User $data, Request $request): User
     {
         $token = $request->get('_route_params')['token'];
 
